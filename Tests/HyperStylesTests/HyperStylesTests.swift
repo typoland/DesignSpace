@@ -1,7 +1,7 @@
 import XCTest
-@testable import HyperStyles
+@testable import DesignSpace
 
-final class HyperStylesTests: XCTestCase {
+final class DesignSpaceTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

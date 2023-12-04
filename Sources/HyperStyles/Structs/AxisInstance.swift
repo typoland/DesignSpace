@@ -28,19 +28,25 @@ import Foundation
 
 
 
-public struct AxisInstance {
-    public init(name: String = "normal") {
+public struct AxisInstance: Identifiable, Hashable {
+    public init(name: String = "Normal") {
         self.name = name
     }
-    public var name: String = "style"
+    public var name: String 
     public var linked: Bool = false
     public var isActive: Bool = true
     public var axisEdgesValues: [ Double ] = []
+    
+    public var id = UUID()
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 
-public extension AxisInstance {
-    var description: String {
+extension AxisInstance: CustomStringConvertible
+{
+    public var description: String {
         return "{\"\(name)\": \(axisEdgesValues)}"
     }
 }

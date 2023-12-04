@@ -7,22 +7,58 @@
 
 import Foundation
 
-
-public struct StyleInstance 
+public struct StyleAxisPosition<A>: Hashable
+where A: StyledAxisProtocol
 {
-    public init(name: String, coordinates: [Double]) {
-        self.name = name
-        self.coordinates = coordinates.map {Int($0)}
+    public var axis: A
+    public var style: AxisInstance
+    public var position: Double
+    public var id = UUID()
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(axis)
+        hasher.combine(style)
+    }
+}
+
+extension StyleAxisPosition: Equatable {
+     public static func == (lhs:Self, rhs:Self) -> Bool {
+         lhs.axis.name == rhs.axis.name
+        && lhs.position == rhs.position
+    }
+}
+
+public struct StyleInstance<A> : Identifiable, Hashable
+where A: StyledAxisProtocol
+{
+    init(position: [StyleAxisPosition<A>]) {
+        self.positionsOnAxes = position
     }
     
-    public static var emptyName: String = "Normal"
-    public var name: String
-    public var coordinates: [Int]
+    public var positionsOnAxes: [StyleAxisPosition<A>]
+    public var id = UUID()
+    
+    public func hash(into hasher: inout Hasher) {
+        positionsOnAxes.forEach { pos in
+            hasher.combine(pos.axis)
+            hasher.combine(pos.style)
+            hasher.combine(pos.id)
+        }
+    }
+}
+
+extension StyleInstance {
+    public var name : String {
+        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.style.name) "})
+    } 
+    public var coordinates: [Int] {
+        positionsOnAxes.map{Int($0.position)}
+    }
 }
 
 extension StyleInstance {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.coordinates == rhs.coordinates
+       lhs.positionsOnAxes == rhs.positionsOnAxes 
     }
 }
 
@@ -34,6 +70,9 @@ extension StyleInstance {
 
 extension StyleInstance {
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.name == rhs.name && lhs.coordinates == rhs.coordinates
+        return lhs.name < rhs.name && //lhs.coordinates < rhs.coordinates
+        zip(lhs.coordinates,rhs.coordinates).reduce(into: true) {r, z in
+            r = r && z.0 < z.1
+        }
     }
 }

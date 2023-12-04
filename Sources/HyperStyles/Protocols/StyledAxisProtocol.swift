@@ -2,8 +2,9 @@
 // https://docs.swift.org/swift-book
 
 import Foundation
+import Observation
 
-public protocol StyledAxisProtocol: AnyObject
+public protocol StyledAxisProtocol: AnyObject, Identifiable, Hashable, Observable 
                                    // SpaceAxisProtocol,
                                    // HasCoordinateProtocol 
 {

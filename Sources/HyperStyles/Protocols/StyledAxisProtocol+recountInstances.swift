@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Foundation
+
 extension StyledAxisProtocol {
     public func recountInstances(for egdesNr: Int) -> Self {
         let result = self

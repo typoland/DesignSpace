@@ -15,30 +15,20 @@ import Foundation
 //
 
 import Foundation
-// import SpaceElements
 
-protocol CoordinatesPairProtocol {
-    var first: Double {get}
-    var second: Double {get}
-}
-
-struct CoordinatesPair: CoordinatesPairProtocol 
-
+struct CoordinatesPair
 {
     let first: Double
     let second: Double
 } 
 
-//extension Array where Element: Collection,
-//                      Element.Element == (any CoordUnitProtocol, any CoordUnitProtocol) 
 extension Array where Element: Collection,
-                      Element.Element: CoordinatesPairProtocol
+                      Element.Element == CoordinatesPair
 
 {
-    //var coordinatesPairs: [[any CoordUnitProtocol]] {
     var coordinatesPairs: [[Double]] {
         self.map { $0
-            .reduce(into: [0.0]) { axisCoordinates, intersection in
+            .reduce(into: [Double]()) { axisCoordinates, intersection in
                 axisCoordinates += [intersection.first, intersection.second]
             }
         }
@@ -78,7 +68,11 @@ extension Array where Element: Collection,
     }
     
     func reduceIntersectionCoordinates(level: Int = 0) -> [[Double]] {
-        //precondition(self[0].count.isPowerOf2, "Not 2^n count")
+        
+        guard self[0].count.isPowerOf2 else {
+            //TODO: Check this
+            return []
+        }
         var result: [[Double]] = []
         
         // Its a 2D It's a last step
@@ -117,39 +111,49 @@ extension Array where Element: StyledAxisProtocol
     /**
      Generate all instances `[StyleInstance]` (name and coordniates) from defined axisInstances.
      */
-    public func genertateInstances() -> [StyleInstance]
+    
+    typealias Axis = Element
+    public func genertateInstances() -> [StyleInstance<Element>]
     //where StyleInstance.SpaceInstanceCoordUnit == Element.CU
     {
         guard !self.isEmpty else { return [] }
-        var result: [StyleInstance]
-        let internalAxes = self.map { $0.normalizedCalculatorValues } // .distributed
+        guard self.count > 1 else {
+            //TODO: Check this
+            return []
+        }
+        var result: [StyleInstance<Element>]
+        let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
         
-        result = internalAxes.internalInstances().map { instance in
-            let externalCoords = (0..<instance.coordinates.count).map { axisNr in
-                instance.coordinates[axisNr].reversed(in: self[axisNr].bounds)
+        result = normalizedAxes.internalInstances().map { normalizedPositions in
+            let externalCoords = (0..<normalizedPositions.count).map { axisNr in
+                
+                let position = normalizedPositions[axisNr].position.reversed(in: self[axisNr].bounds)
+                return StyleAxisPosition(axis: self[axisNr], 
+                                         style: normalizedPositions[axisNr].style, 
+                                         position: position)
             }
-            return StyleInstance(name: instance.name,
-                                 coordinates: externalCoords)
+            return StyleInstance(position: externalCoords)
         }
         return result
     }
     
-    func internalInstances() -> [(name: String, coordinates: [Double])] {
+    //Internal means normalized !
+    func internalInstances() -> [[StyleAxisPosition<Element>]] {
         
         func styleValueIndex(edge: SpaceEdge) -> Int {
             let edgeAxisNr = edge.axisNr
             return edge.from.deleteBit(edgeAxisNr)
         }
         
-        var result: [(name: String, coordinates: [Double])] = []
+        var result: [[StyleAxisPosition<Element>]] = []
         let hyperspaceQuads: [[SpaceQuad]] = quads
         
         for stylesIndexes in stylesIndexList { // [[Int]]
-            var name = ""
+            
+            var normalizedPosition: [StyleAxisPosition<Element>] = []
             var axesIntersections: [[CoordinatesPair]] = []
             for axisNr in 0..<dimensions {
                 let styleIndex = stylesIndexes[axisNr]
-                name += "\(self[axisNr].axisInstances[styleIndex].name) "
                 
                 var intersections: [CoordinatesPair] = []
                 if hyperspaceQuads[0].isEmpty {
@@ -181,20 +185,35 @@ extension Array where Element: StyledAxisProtocol
                     }
                     axesIntersections.append(intersections)
                 }
+                normalizedPosition.append(StyleAxisPosition(axis: self[axisNr], 
+                                                            style: self[axisNr].axisInstances[styleIndex], 
+                                                            position: Double.nan)) //not counted yet
             }
             // let data =  groups.flat//flat(array: groups)
-            let coordinatesArray = axesIntersections.coordinatesPairs.reduceIntersectionCoordinates // (list: data)
-            let coordinates = coordinatesArray.map { $0.averageD }
+//            print ("AXES INTESTECTIONS \(axesIntersections)")
+//            print ("AXES COORDINATES PAIRS \(axesIntersections.coordinatesPairs)")
+            let coordinatesArray = axesIntersections
+                .coordinatesPairs
+                .reduceIntersectionCoordinates // (list: data)
             
-            if let range = name.range(of: #"\(.*\)"#,
-                                      options: .regularExpression)
-            {
-                let a = String(name[..<range.lowerBound])
-                let b = String(name[range.upperBound...])
-                name = a+b
-            }
-            name = name.trimmingCharacters(in: .whitespacesAndNewlines).condenseWhitespace
-            result.append((name: name, coordinates: coordinates))
+            normalizedPosition.enumerated().forEach({index, position in
+//                print ("NORMALIZED POSITION")
+//                dump (normalizedPosition)
+//                print ("COORDINATES ARRAY")
+//                dump (coordinatesArray)
+                normalizedPosition[index].position = coordinatesArray[index].averageD
+            })
+            //let coordinates = coordinatesArray.map { $0.averageD }
+            
+//            if let range = name.range(of: #"\(.*\)"#,
+//                                      options: .regularExpression)
+//            {
+//                let a = String(name[..<range.lowerBound])
+//                let b = String(name[range.upperBound...])
+//                name = a+b
+//            }
+//            name = name.trimmingCharacters(in: .whitespacesAndNewlines).condenseWhitespace
+            result.append(normalizedPosition)
         }
         return result
     }
