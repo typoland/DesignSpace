@@ -11,6 +11,7 @@ public protocol StyledAxisProtocol: AnyObject,
 {
     
     typealias AxisStyleInstance = AxisInstance
+  
     var axisInstances: [AxisInstance] {get set}
     var distribution: Double? {get set}
     var name: String {get set}
@@ -18,6 +19,8 @@ public protocol StyledAxisProtocol: AnyObject,
     var upperBound: Double {get set}
     var lowerBound: Double {get set}
     var position: Double {get set}
+    
+    var id: UUID {get}
     
     init(name:String, 
          shortName: String,

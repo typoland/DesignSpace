@@ -7,41 +7,39 @@
 
 import Foundation
 
-public struct StyleAxisPosition<A>: Hashable
-where A: StyledAxisProtocol
+public struct StyleAxisPosition: Hashable, Identifiable
+
 {
-    public var axis: A
-    public var style: AxisInstance
+    public var axisIndex: Int
+    public var instanceIndex: Int
+    
     public var position: Double
-    public var id = UUID()
+    public var id: Int { hashValue }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(axis)
-        hasher.combine(style)
+        hasher.combine(axisIndex)
+        hasher.combine(instanceIndex*32)
     }
 }
 
 extension StyleAxisPosition: Equatable {
      public static func == (lhs:Self, rhs:Self) -> Bool {
-         lhs.axis.name == rhs.axis.name
-        && lhs.position == rhs.position
+         lhs.axisIndex == rhs.axisIndex
+        && lhs.instanceIndex == rhs.instanceIndex
     }
 }
 
-public struct StyleInstance<A> : Identifiable, Hashable
-where A: StyledAxisProtocol
+public struct StyleInstance : Identifiable, Hashable
 {
-    init(position: [StyleAxisPosition<A>]) {
+    init(position: [StyleAxisPosition]) {
         self.positionsOnAxes = position
     }
     
-    public var positionsOnAxes: [StyleAxisPosition<A>]
-    public var id = UUID()
+    public var positionsOnAxes: [StyleAxisPosition]
+    public var id: Int {hashValue}
     
     public func hash(into hasher: inout Hasher) {
         positionsOnAxes.forEach { pos in
-            hasher.combine(pos.axis)
-            hasher.combine(pos.style)
             hasher.combine(pos.id)
         }
     }
@@ -49,7 +47,7 @@ where A: StyledAxisProtocol
 
 extension StyleInstance {
     public var name : String {
-        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.style.name) "})
+        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.instanceIndex) "})
     } 
     public var coordinates: [Int] {
         positionsOnAxes.map{Int($0.position)}

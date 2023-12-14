@@ -83,6 +83,12 @@ extension Space {
         axes.deleteAxis(at: index)
     }
     
+    public func delete(axis: Axis) {
+        if let index = axes.firstIndex(of: axis) {
+            axes.deleteAxis(at: index)
+        }
+    }
+    
     @discardableResult
     public  func addInstance(name: String = "Normal", 
                              to axisIndex: Array<Axis>.Index,
@@ -135,7 +141,7 @@ extension Space {
         
         if let axisIndex = axes.firstIndex(where: {$0.name == axis.name}) {
             
-            let edge = _axes.edges[axisIndex][index] 
+            let edge = axes.edges[axisIndex][index] 
             let a = coordinatesOfCorner(of: edge.from).filter({$0.axis.name != axis.name})
             return "\(a.reduce(into: "", {$0 = $0 + " | \($1.axis.shortName) \($1.onUpperBound ? "▲" : "▽")"})) |"
         }
@@ -145,7 +151,7 @@ extension Space {
 }
     
 public extension Space {
-    var styles: [StyleInstance<Axis>] {
+    var styles: [StyleInstance] {
         let t = Date.now
         let r = axes.genertateStyles()
         print ("Counted in \(Date.now.timeIntervalSince(t).formatted(.number.rounded(increment: 0.00001)))s.")
@@ -164,8 +170,39 @@ public extension Space {
         }
     }
     
-    func setPositions(by styleInstance: StyleInstance<Axis>) {
+    func setPositions(by styleInstance: StyleInstance) {
         styleInstance.coordinates.enumerated()
             .forEach({axes[$0].position = Double($1)})
     }
 }
+
+
+public extension Space {
+    func set(instance: AxisInstance, of axis: Axis) {
+        if let index = axis.axisInstances.firstIndex(of: instance) {
+            axis.axisInstances[index] = instance
+        }
+    }
+    
+    func set(edge edgeIndex:Int, of instance: AxisInstance, of axis: Axis, to value: Double) {
+        withObservationTracking({
+            if let instanceIndex = axis.axisInstances.firstIndex(of: instance) {
+                axis.axisInstances[instanceIndex]
+                    .axisEdgesValues[edgeIndex] = value
+            } 
+        }, onChange: {print ("wow")})
+        withMutation(keyPath: \.axes) {
+          _axes = axes  
+        }
+    }
+}
+
+public extension Space {
+    func name(of style: StyleInstance) -> String {
+        var r = ""
+        for axis in style.positionsOnAxes {
+            r += axes [axis.axisIndex].axisInstances[axis.instanceIndex].name + " "
+        } 
+        return r
+    }
+} 

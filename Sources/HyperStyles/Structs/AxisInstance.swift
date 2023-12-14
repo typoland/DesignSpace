@@ -26,9 +26,11 @@ import Foundation
 ///
 ///For two dimensional designspace this is simple. But in more dimensional designspace lines dosn't like to cross each other, so finding a right coordinates is a tricky job.
 
-
-
 public struct AxisInstance: Identifiable, Hashable {
+    public static func == (lhs: AxisInstance, rhs: AxisInstance) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     public init(name: String = "Normal") {
         self.name = name
     }
@@ -39,7 +41,7 @@ public struct AxisInstance: Identifiable, Hashable {
     
     public var id = UUID()
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
+        hasher.combine(id)
     }
 }
 
