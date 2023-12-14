@@ -60,9 +60,7 @@ extension Array where Element: Collection,
                       Element.Element == Double
 
 {
-    
-    
-    
+
     var reduceIntersectionCoordinates: [[Double]] {
         return self.reduceIntersectionCoordinates()
     }
@@ -112,24 +110,29 @@ extension Array where Element: StyledAxisProtocol
      Generate all instances `[StyleInstance]` (name and coordniates) from defined axisInstances.
      */
     
-    typealias Axis = Element
-    public func genertateInstances() -> [StyleInstance<Element>]
-    //where StyleInstance.SpaceInstanceCoordUnit == Element.CU
+    public typealias Axis = Element
+    
+    public func genertateStyles() -> [StyleInstance<Axis>]
     {
         guard !self.isEmpty else { return [] }
         guard self.count > 1 else {
-            //TODO: Check this
+            //TODO: Check this, should return styles of one-dimensional space
             return []
         }
         var result: [StyleInstance<Element>]
         let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
         
-        result = normalizedAxes.internalInstances().map { normalizedPositions in
-            let externalCoords = (0..<normalizedPositions.count).map { axisNr in
+        result = normalizedAxes.internalInstances().map { internalAxisInstances in
+            let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
-                let position = normalizedPositions[axisNr].position.reversed(in: self[axisNr].bounds)
+                let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)
+                var style = internalAxisInstances[axisNr].style
+                let internalAxis = internalAxisInstances[axisNr].style.axisEdgesValues.map {
+                    $0.reversed(in: self[axisNr].bounds)
+                } 
+                style.axisEdgesValues = internalAxis
                 return StyleAxisPosition(axis: self[axisNr], 
-                                         style: normalizedPositions[axisNr].style, 
+                                         style: style, 
                                          position: position)
             }
             return StyleInstance(position: externalCoords)

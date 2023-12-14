@@ -14,7 +14,9 @@ public extension Array {
      a.makeDifferent(path: \.x)
      >>> [Some(x:"a"), Some(x:"a1"), Some(x:"a2")]
      */
-    mutating func makeDifferent<T: Hashable & StringProtocol>(path: WritableKeyPath<Element, T>){
+    mutating func makeDifferent<T>(path: WritableKeyPath<Element, T>)
+    where T: Hashable & StringProtocol
+    {
         var stringIndexes:[T:[Int]] = [:]
         
         for elementIndex in 0..<self.count {

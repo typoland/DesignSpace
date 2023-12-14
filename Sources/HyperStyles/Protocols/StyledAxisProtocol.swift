@@ -4,9 +4,10 @@
 import Foundation
 import Observation
 
-public protocol StyledAxisProtocol: AnyObject, Identifiable, Hashable, Observable 
-                                   // SpaceAxisProtocol,
-                                   // HasCoordinateProtocol 
+public protocol StyledAxisProtocol: AnyObject, 
+                                        Identifiable, 
+                                        Hashable, 
+                                        Observable 
 {
     
     typealias AxisStyleInstance = AxisInstance
@@ -17,11 +18,10 @@ public protocol StyledAxisProtocol: AnyObject, Identifiable, Hashable, Observabl
     var upperBound: Double {get set}
     var lowerBound: Double {get set}
     var position: Double {get set}
+    
     init(name:String, 
          shortName: String,
          bounds: ClosedRange<Double>)
-    
-    
 }
 
 public extension StyledAxisProtocol {

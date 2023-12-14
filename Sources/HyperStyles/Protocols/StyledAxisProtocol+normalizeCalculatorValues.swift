@@ -27,5 +27,4 @@ extension StyledAxisProtocol
         }
         return result
     }
-    
 }

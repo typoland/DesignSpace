@@ -57,6 +57,9 @@ where Axis: StyledAxisProtocol
 //}
 
 extension Space {
+    
+    
+    
     @discardableResult
     public func addAxis(name: String, 
                         shortName:String, 
@@ -71,26 +74,36 @@ extension Space {
     public func insertAxis(name: String, 
                            shortName: String,
                            style: String = "Normal", 
-                           at index: Int) -> Axis {
+                           at index: Int) -> Axis 
+    {
         axes.insertAxis(at: index)
     }
+    
     public func deleteAxis(at index: Int) {
         axes.deleteAxis(at: index)
     }
+    
     @discardableResult
     public  func addInstance(name: String = "Normal", 
                              to axisIndex: Array<Axis>.Index,
-                             at position: Double? = nil) -> Axis.AxisStyleInstance {
-        axes.addInstance(name: name, to: axisIndex, at: position)
+                             at position: Double? = nil) -> Axis.AxisStyleInstance 
+    {
+        axes.addInstance(name: name, 
+                         to: axisIndex, 
+                         at: position)
     }
+    
     @discardableResult
     public func addInstance(name: String = "Normal", 
                              to axis: Axis,
-                             at position: Double? = nil) -> Axis.AxisStyleInstance? {
+                             at position: Double? = nil) throws -> Axis.AxisStyleInstance? 
+    {
         if let index = axes.firstIndex(of: axis) {
-            return axes.addInstance(name: name, to: index, at: position)
+            return axes.addInstance(name: name, 
+                                    to: index, 
+                                    at: position)
         } 
-        return nil
+        throw Errors.axisDoesNotExistInSpace(axisName: axis.name)
     }
 }
 
@@ -134,7 +147,7 @@ extension Space {
 public extension Space {
     var styles: [StyleInstance<Axis>] {
         let t = Date.now
-        let r = axes.genertateInstances()
+        let r = axes.genertateStyles()
         print ("Counted in \(Date.now.timeIntervalSince(t).formatted(.number.rounded(increment: 0.00001)))s.")
         return r
     }

@@ -39,7 +39,7 @@ public struct AxisInstance: Identifiable, Hashable {
     
     public var id = UUID()
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(name)
     }
 }
 
@@ -47,20 +47,6 @@ public struct AxisInstance: Identifiable, Hashable {
 extension AxisInstance: CustomStringConvertible
 {
     public var description: String {
-        return "{\"\(name)\": \(axisEdgesValues)}"
+        return "Axis Instance \"\(name)\": \(axisEdgesValues)"
     }
 }
-
-
-//public protocol AxisInstanceProtocol : Hashable {
-//    ///Partial name of an instance. *"<regular>"* will be ignored on output
-//    associatedtype CU : CoordUnitProtocol
-//    var name: String {get set}
-//    ///Array of as many values as egdes parallel to one axis. Each value describe position on axis for instance on one edge. Two dimensional space has two edges parallel to one axis, three dimensional designspace has four edges, four dimensional has eight edges... etc.. *2^n* where *n* is number of axes (dimensions)
-//    var axisEdgesValues: [CU] {get set}
-//    ///Treat values as one. If true all values are the same
-//    var linked: Bool {get set}
-//    var isOn: Bool {get set}
-//    //static var defaultName: String {get set}
-//    init ()
-//}
