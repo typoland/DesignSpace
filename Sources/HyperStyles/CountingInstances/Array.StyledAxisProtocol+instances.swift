@@ -128,7 +128,7 @@ extension Array where Element: StyledAxisProtocol
                 let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)
                 let instanceindex = internalAxisInstances[axisNr].instanceIndex
                 
-                return StyleAxisPosition(axisIndex: axisNr, 
+                return AxisInstanceSelection(axisIndex: axisNr, 
                                          instanceIndex: instanceindex, 
                                          position: position)
             }
@@ -138,19 +138,19 @@ extension Array where Element: StyledAxisProtocol
     }
     
     //Internal means normalized !
-    func internalInstances() -> [[StyleAxisPosition]] {
+    func internalInstances() -> [[AxisInstanceSelection]] {
         
         func styleValueIndex(edge: SpaceEdge) -> Int {
             let edgeAxisNr = edge.axisNr
             return edge.from.deleteBit(edgeAxisNr)
         }
         
-        var result: [[StyleAxisPosition]] = []
+        var result: [[AxisInstanceSelection]] = []
         let hyperspaceQuads: [[SpaceQuad]] = quads
         
         for stylesIndexes in stylesIndexList { // [[Int]]
             
-            var normalizedPosition: [StyleAxisPosition] = []
+            var normalizedPosition: [AxisInstanceSelection] = []
             var axesIntersections: [[CoordinatesPair]] = []
             for axisNr in 0..<dimensions {
                 let styleIndex = stylesIndexes[axisNr]
@@ -185,7 +185,7 @@ extension Array where Element: StyledAxisProtocol
                     }
                     axesIntersections.append(intersections)
                 }
-                normalizedPosition.append(StyleAxisPosition(axisIndex:axisNr, 
+                normalizedPosition.append(AxisInstanceSelection(axisIndex:axisNr, 
                                                             instanceIndex: styleIndex, 
                                                             position: Double.nan)) //not counted yet
             }

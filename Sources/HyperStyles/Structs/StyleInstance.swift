@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct StyleAxisPosition: Hashable, Identifiable
+public struct AxisInstanceSelection: Hashable, Identifiable
 
 {
     public var axisIndex: Int
@@ -22,7 +22,7 @@ public struct StyleAxisPosition: Hashable, Identifiable
     }
 }
 
-extension StyleAxisPosition: Equatable {
+extension AxisInstanceSelection: Equatable {
      public static func == (lhs:Self, rhs:Self) -> Bool {
          lhs.axisIndex == rhs.axisIndex
         && lhs.instanceIndex == rhs.instanceIndex
@@ -31,11 +31,11 @@ extension StyleAxisPosition: Equatable {
 
 public struct StyleInstance : Identifiable, Hashable
 {
-    init(position: [StyleAxisPosition]) {
+    init(position: [AxisInstanceSelection]) {
         self.positionsOnAxes = position
     }
     
-    public var positionsOnAxes: [StyleAxisPosition]
+    public var positionsOnAxes: [AxisInstanceSelection]
     public var id: Int {hashValue}
     
     public func hash(into hasher: inout Hasher) {
