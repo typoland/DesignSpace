@@ -10,56 +10,21 @@ import Observation
 
 @Observable
 public class Space<Axis>
-//: Sequence, 
-//                            IteratorProtocol, 
-//                            RandomAccessCollection
+
 where Axis: StyledAxisProtocol
 {
-//    public typealias Element = Axis
     public internal (set) var axes: [Axis] = []
     
-//    private var counter: Int = 0
-//    
-//    public func next() -> Axis? {
-//        if counter == 0 {
-//            return nil
-//        } else {
-//            defer { counter -= 1 }
-//            return axes[counter]
-//        }
-//    }
-//    
     public init() {}
-    
-//    public init(_ axes: [Axis]) {
-//        for axis in axes {
-//            print ("do the job with \(axis)")
-//            self.axes.addAxis()
-//        }
-//    }
     
     public var count: Int {
         axes.count
     }
 }
 
-//extension DesignSpace: MutableCollection {
-//    public typealias Index = Int
-//    public subscript(index: Index) -> Axis {
-//        get {_axes[index]}
-//        set (axis) {_axes[index] = axis}
-//    }
-//    public var startIndex: Int { _axes.startIndex }
-//    public var endIndex: Int { _axes.endIndex }
-//    public func index(after i: Index) -> Index {
-//        _axes.index(after: i)
-//    }
-//}
 
 extension Space {
-    
-    
-    
+
     @discardableResult
     public func addAxis(name: String, 
                         shortName:String, 
@@ -90,7 +55,7 @@ extension Space {
     }
     
     @discardableResult
-    public  func addInstance(name: String = "Normal", 
+    public func addInstance(name: String = "Normal", 
                              to axisIndex: Array<Axis>.Index,
                              at position: Double? = nil) -> Axis.AxisStyleInstance 
     {
@@ -116,8 +81,20 @@ extension Space {
 extension Space { 
     
     struct CornerCoordinate {
+        enum Bound: CustomStringConvertible {
+            case min
+            case max
+            
+            var description: String {
+                switch self {
+                case .min: return "▁"//"▽"
+                case .max: return "▉"//"▲"   
+                }
+            }
+        }
+        
         var axis: Axis
-        var onUpperBound: Bool
+        var bound: Bound
     }
     
     public func instanceEdgeValueName(of axis: Axis, 
@@ -133,19 +110,18 @@ extension Space {
             var result: [CornerCoordinate] = []
             for (axisIndex, axis) in axes.enumerated() {
                 let mask = 1<<axisIndex
-                let val = mask & index != 0 ? true : false
-                result.append(CornerCoordinate(axis:axis, onUpperBound: val))
+                let val: CornerCoordinate.Bound = mask & index != 0 ? .max : .min
+                result.append(CornerCoordinate(axis:axis, bound: val))
             }
             return result
         }
         
         if let axisIndex = axes.firstIndex(where: {$0.name == axis.name}) {
-            
             let edge = axes.edges[axisIndex][index] 
             let a = coordinatesOfCorner(of: edge.from).filter({$0.axis.name != axis.name})
-            return "\(a.reduce(into: "", {$0 = $0 + " | \($1.axis.shortName) \($1.onUpperBound ? "▲" : "▽")"})) |"
+            return a.reduce(into: [String](), {$0.append("\($1.axis.shortName): \($1.bound)")}).joined(separator: "  ")
         }
-        ///take vertices coordinates
+        
         return  ""
     }
 }
@@ -203,6 +179,6 @@ public extension Space {
         for axis in style.positionsOnAxes {
             r += axes [axis.axisIndex].axisInstances[axis.instanceIndex].name + " "
         } 
-        return r
+        return r.split(separator: " ").joined(separator: " ")
     }
 } 
