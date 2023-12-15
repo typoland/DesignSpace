@@ -126,10 +126,10 @@ extension Array where Element: StyledAxisProtocol
             let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
                 let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)
-                let instanceindex = internalAxisInstances[axisNr].instanceIndex
+                let instanceId = internalAxisInstances[axisNr].instanceId
                 
-                return AxisInstanceSelection(axisIndex: axisNr, 
-                                         instanceIndex: instanceindex, 
+                return AxisInstanceSelection(axisId: self[axisNr].id, 
+                                         instanceId: instanceId, 
                                          position: position)
             }
             return StyleInstance(position: externalCoords)
@@ -185,8 +185,9 @@ extension Array where Element: StyledAxisProtocol
                     }
                     axesIntersections.append(intersections)
                 }
-                normalizedPosition.append(AxisInstanceSelection(axisIndex:axisNr, 
-                                                            instanceIndex: styleIndex, 
+                normalizedPosition.append(AxisInstanceSelection(axisId: self[axisNr].id, 
+                                                                instanceId: self[axisNr]
+                    .axisInstances[styleIndex].id, 
                                                             position: Double.nan)) //not counted yet
             }
             // let data =  groups.flat//flat(array: groups)

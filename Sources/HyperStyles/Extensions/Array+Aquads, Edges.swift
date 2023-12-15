@@ -30,13 +30,13 @@ extension Array
 
 extension Array
 {
-    /// Returns  all space edges gruped by axes in subarrays
+    /// Returns  all space edges gruped by  in subarrays for each dimension
     var edges: [[SpaceEdge]] {
-        return SpaceEdge.edges(of: dimensions)
+        return SpaceEdge.edges(of: self.count)
     }
     
     /// Returns Indexes of corners of `edgeNr`
     func edgeNr(_ edgeNr: Int) -> SpaceEdge {
-        return SpaceEdge.edgeNr(edgeNr, of: dimensions)
+        return SpaceEdge(edgeNr: edgeNr, of: self.count)
     }
 }

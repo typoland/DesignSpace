@@ -10,22 +10,22 @@ import Foundation
 public struct AxisInstanceSelection: Hashable, Identifiable
 
 {
-    public var axisIndex: Int
-    public var instanceIndex: Int
+    public var axisId: UUID
+    public var instanceId: UUID
     
     public var position: Double
     public var id: Int { hashValue }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(axisIndex)
-        hasher.combine(instanceIndex*32)
+        hasher.combine(axisId)
+        hasher.combine(instanceId)
     }
 }
 
 extension AxisInstanceSelection: Equatable {
      public static func == (lhs:Self, rhs:Self) -> Bool {
-         lhs.axisIndex == rhs.axisIndex
-        && lhs.instanceIndex == rhs.instanceIndex
+         lhs.axisId == rhs.axisId
+        && lhs.instanceId == rhs.instanceId
     }
 }
 
@@ -47,7 +47,7 @@ public struct StyleInstance : Identifiable, Hashable
 
 extension StyleInstance {
     public var name : String {
-        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.instanceIndex) "})
+        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.instanceId) "})
     } 
     public var coordinates: [Int] {
         positionsOnAxes.map{Int($0.position)}

@@ -24,7 +24,21 @@ struct SpaceEdge {
     public var from: Int
     ///Index of hypercube corner edge connects to
     public var to: Int
-    public init(from: Int, to: Int) {
+    
+    init(from: Int, to: Int) {
+        self.from = from
+        self.to = to
+    }
+    
+    ///Returns Indexes of corners of `edgeNr`
+    init(edgeNr: Int, of dimensions: Int){
+        precondition((0 ... Self.edgesCount(for: dimensions)).contains(edgeNr))
+        
+        let axisNr = edgeNr >> (dimensions - 1)
+        let axisEdgesNumberMask = (1 << (dimensions - 1)) - 1
+        let axisEdgeNr = edgeNr & axisEdgesNumberMask
+        let from = axisEdgeNr.insert(bit: false, at: axisNr)
+        let to   = axisEdgeNr.insert(bit: true,  at: axisNr)
         self.from = from
         self.to = to
     }
@@ -33,7 +47,7 @@ struct SpaceEdge {
 extension SpaceEdge {
     ///Index of an `axis`, which egde is prallel to
     ///- returns: number of axis which `edge` is parallel to.
-    public var axisNr: Int {
+    var axisNr: Int {
         return (from ^ to).log2!
     }
 }
@@ -80,16 +94,6 @@ extension SpaceEdge {
         return result
     }
     
-    ///Returns Indexes of corners of `edgeNr`
-    public static func edgeNr(_ edgeNr: Int, of dimensions: Int) -> Self {
-        precondition((0 ... edgesCount(for: dimensions)).contains(edgeNr))
-        
-        let axisNr = edgeNr >> (dimensions - 1)
-        let axisEdgesNumberMask = (1 << (dimensions - 1)) - 1
-        let axisEdgeNr = edgeNr & axisEdgesNumberMask
-        let from = axisEdgeNr.insert(bit: false, at: axisNr)
-        let to   = axisEdgeNr.insert(bit: true,  at: axisNr)
-        return Self(from: from, to: to)
-    }
+    
 }
 

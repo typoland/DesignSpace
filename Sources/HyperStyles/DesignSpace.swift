@@ -176,9 +176,23 @@ public extension Space {
 public extension Space {
     func name(of style: StyleInstance) -> String {
         var r = ""
-        for axis in style.positionsOnAxes {
-            r += axes [axis.axisIndex].axisInstances[axis.instanceIndex].name + " "
+        for positionOnAxis in style.positionsOnAxes {
+            if let axis = self[positionOnAxis.axisId],
+               let instance = self[axis, positionOnAxis.instanceId] {
+                r += instance.name + " "
+            }
         } 
         return r.split(separator: " ").joined(separator: " ")
     }
 } 
+
+
+public extension Space {
+    subscript (id: UUID) -> Axis? {
+        return axes.first(where: {$0.id == id})
+    }
+    
+    subscript (axis: Axis, id: UUID) -> AxisInstance? {
+        return axis.axisInstances.first(where: {$0.id == id })
+    }
+}

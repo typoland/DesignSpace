@@ -8,6 +8,8 @@
 import Foundation
 
 
+
+
 extension Array where Element: StyledAxisProtocol {
     
     /**Delivers all combination of Indexes of styled axes Instances.

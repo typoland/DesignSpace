@@ -34,6 +34,7 @@ public struct AxisInstance: Identifiable, Hashable {
     public init(name: String = "Normal") {
         self.name = name
     }
+    
     public var name: String 
     public var linked: Bool = false
     public var isActive: Bool = true
