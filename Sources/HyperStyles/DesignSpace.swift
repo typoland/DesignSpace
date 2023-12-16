@@ -67,12 +67,12 @@ extension Space {
     @discardableResult
     public func addInstance(name: String = "Normal", 
                              to axis: Axis,
-                             at position: Double? = nil) throws -> Axis.AxisStyleInstance? 
+                            at position: Double? = nil) throws -> Axis.AxisStyleInstance.ID? 
     {
         if let index = axes.firstIndex(of: axis) {
             return axes.addInstance(name: name, 
                                     to: index, 
-                                    at: position)
+                                    at: position).id
         } 
         throw Errors.axisDoesNotExistInSpace(axisName: axis.name)
     }
@@ -87,8 +87,8 @@ extension Space {
             
             var description: String {
                 switch self {
-                case .min: return "▁"//"▽"
-                case .max: return "▉"//"▲"   
+                case .min: return "▽"// "min"//▁"//"▽"
+                case .max: return "▲"//"max"//"▉"//"▲"   
                 }
             }
         }
@@ -119,7 +119,7 @@ extension Space {
         if let axisIndex = axes.firstIndex(where: {$0.name == axis.name}) {
             let edge = axes.edges[axisIndex][index] 
             let a = coordinatesOfCorner(of: edge.from).filter({$0.axis.name != axis.name})
-            return a.reduce(into: [String](), {$0.append("\($1.axis.shortName): \($1.bound)")}).joined(separator: "  ")
+            return a.reduce(into: [String](), {$0.append("\($1.bound) \($1.axis.shortName)")}).joined(separator: "  ")
         }
         
         return  ""
@@ -130,7 +130,7 @@ public extension Space {
     var styles: [StyleInstance] {
         let t = Date.now
         let r = axes.genertateStyles()
-        print ("Counted in \(Date.now.timeIntervalSince(t).formatted(.number.rounded(increment: 0.00001)))s.")
+        print ("Space.styles counted in \(Date.now.timeIntervalSince(t).formatted(.number.rounded(increment: 0.00001)))s.")
         return r
     }
 } 

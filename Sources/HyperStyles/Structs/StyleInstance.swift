@@ -7,28 +7,6 @@
 
 import Foundation
 
-public struct AxisInstanceSelection: Hashable, Identifiable
-
-{
-    public var axisId: UUID
-    public var instanceId: UUID
-    
-    public var position: Double
-    public var id: Int { hashValue }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(axisId)
-        hasher.combine(instanceId)
-    }
-}
-
-extension AxisInstanceSelection: Equatable {
-     public static func == (lhs:Self, rhs:Self) -> Bool {
-         lhs.axisId == rhs.axisId
-        && lhs.instanceId == rhs.instanceId
-    }
-}
-
 public struct StyleInstance : Identifiable, Hashable
 {
     init(position: [AxisInstanceSelection]) {
@@ -45,6 +23,19 @@ public struct StyleInstance : Identifiable, Hashable
     }
 }
 
+extension Array 
+where Element == AxisInstanceSelection {
+    public mutating func addAxis<A>(_ axis: A)
+    where A: StyledAxisProtocol 
+    {
+        self.append(AxisInstanceSelection(axisId: axis.id, 
+                                                     instanceId: axis.axisInstances.first!.id, 
+                                                     position: axis.position))
+    }
+    
+}
+
+
 extension StyleInstance {
     public var name : String {
         positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.instanceId) "})
@@ -56,7 +47,7 @@ extension StyleInstance {
 
 extension StyleInstance {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-       lhs.positionsOnAxes == rhs.positionsOnAxes 
+       lhs.id == rhs.id 
     }
 }
 
@@ -74,3 +65,11 @@ extension StyleInstance {
         }
     }
 }
+
+//extension Array where Element == StyleInstance {
+//    public subscript<A>(axis: A, instance: AxisInstance) -> Element
+//    where A: StyledAxisProtocol
+//    {
+//       
+//    }
+//}

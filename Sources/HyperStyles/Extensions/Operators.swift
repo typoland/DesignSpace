@@ -54,12 +54,12 @@ func ⊗ <F: FloatingPoint>(lhs: (F, F), rhs: (F, F)) -> (F, F) {
     return normalizedIntersection(x1: lhs.0, x2: lhs.1, y1: rhs.0, y2: rhs.1)
 }
 
-func symbolicCoordinates(of cornerIndex: Int, in arrayCount: Int) -> [Bool] {
-    var result: [Bool] = []
-    let mask = (1<<arrayCount) - 1
-    for dimension in 0..<(arrayCount-1) {
-        let n = 1 << dimension
-        result.append(cornerIndex & n == n)
-    }
-    return result
-}
+//func symbolicCoordinates(of cornerIndex: Int, in arrayCount: Int) -> [Bool] {
+//    var result: [Bool] = []
+//    let mask = (1<<arrayCount) - 1
+//    for dimension in 0..<(arrayCount-1) {
+//        let n = 1 << dimension
+//        result.append(cornerIndex & n == n)
+//    }
+//    return result
+//}

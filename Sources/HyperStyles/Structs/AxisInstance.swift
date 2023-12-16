@@ -28,7 +28,8 @@ import Foundation
 
 public struct AxisInstance: Identifiable, Hashable {
     public static func == (lhs: AxisInstance, rhs: AxisInstance) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id 
+        //&& lhs.axisEdgesValues == rhs.axisEdgesValues
     }
     
     public init(name: String = "Normal") {
