@@ -14,7 +14,7 @@ public struct StyleInstance : Identifiable, Hashable
     }
     
     public var positionsOnAxes: [AxisInstanceSelection]
-    public var id: Int {hashValue}
+    public var id: Int { hashValue }
     
     public func hash(into hasher: inout Hasher) {
         positionsOnAxes.forEach { pos in
@@ -48,6 +48,8 @@ extension StyleInstance {
 extension StyleInstance {
     public static func == (lhs: Self, rhs: Self) -> Bool {
        lhs.id == rhs.id 
+       && lhs.positionsOnAxes == rhs.positionsOnAxes
+       && lhs.coordinates == rhs.coordinates
     }
 }
 
@@ -65,11 +67,3 @@ extension StyleInstance {
         }
     }
 }
-
-//extension Array where Element == StyleInstance {
-//    public subscript<A>(axis: A, instance: AxisInstance) -> Element
-//    where A: StyledAxisProtocol
-//    {
-//       
-//    }
-//}

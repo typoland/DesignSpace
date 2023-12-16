@@ -126,6 +126,7 @@ extension Array where Element: StyledAxisProtocol
             let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
                 let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)
+                
                 let instanceId = internalAxisInstances[axisNr].instanceId
                 
                 return AxisInstanceSelection(axisId: self[axisNr].id, 
@@ -134,6 +135,7 @@ extension Array where Element: StyledAxisProtocol
             }
             return StyleInstance(position: externalCoords)
         }
+        
         return result
     }
     
@@ -185,35 +187,21 @@ extension Array where Element: StyledAxisProtocol
                     }
                     axesIntersections.append(intersections)
                 }
-                normalizedPosition.append(AxisInstanceSelection(axisId: self[axisNr].id, 
-                                                                instanceId: self[axisNr]
-                    .axisInstances[styleIndex].id, 
-                                                            position: Double.nan)) //not counted yet
+                let virginPosition = AxisInstanceSelection(axisId: self[axisNr].id, 
+                                                           instanceId: self[axisNr].axisInstances[styleIndex].id, 
+                                                           position: Double.nan)
+                normalizedPosition.append(virginPosition)
             }
-            // let data =  groups.flat//flat(array: groups)
-//            print ("AXES INTESTECTIONS \(axesIntersections)")
-//            print ("AXES COORDINATES PAIRS \(axesIntersections.coordinatesPairs)")
+
             let coordinatesArray = axesIntersections
                 .coordinatesPairs
-                .reduceIntersectionCoordinates // (list: data)
+                .reduceIntersectionCoordinates 
             
-            normalizedPosition.enumerated().forEach({index, position in
-//                print ("NORMALIZED POSITION")
-//                dump (normalizedPosition)
-//                print ("COORDINATES ARRAY")
-//                dump (coordinatesArray)
+            normalizedPosition.enumerated().forEach {
+                index, position in
                 normalizedPosition[index].position = coordinatesArray[index].averageD
-            })
-            //let coordinates = coordinatesArray.map { $0.averageD }
-            
-//            if let range = name.range(of: #"\(.*\)"#,
-//                                      options: .regularExpression)
-//            {
-//                let a = String(name[..<range.lowerBound])
-//                let b = String(name[range.upperBound...])
-//                name = a+b
-//            }
-//            name = name.trimmingCharacters(in: .whitespacesAndNewlines).condenseWhitespace
+            }
+    
             result.append(normalizedPosition)
         }
         return result
