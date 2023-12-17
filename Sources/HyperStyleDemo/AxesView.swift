@@ -10,23 +10,23 @@ import DesignSpace
 
 typealias Selection = [AxisInstanceSelection]
 
-public struct AxesView<Axis>: View 
+public struct StyledAxesView<Axis>: View 
 where Axis: StyledAxisProtocol
 {
-    @Environment(Space<Axis>.self) var designSpace
+    //@Environment(Space<Axis>.self) var designSpace
     
     @State var selectedStyle: StyleInstance? = nil
     @State var spaceStyleIndex: Int = 0
     @State var styles:  [StyleInstance] = []
     @State var snapToStyle: Bool = false
-    
+    var designSpace: Space<Axis>
     func updateStyles() {
-        //designSpace.styles.forEach({print ("I", $0.positionsOnAxes.map {$0.position})})
         styles = designSpace.styles
-       // styles.forEach({print ("O", $0.positionsOnAxes.map {$0.position})})
     }
     
-    public init() {}
+    public init(designSpace: Space<Axis>) {
+        self.designSpace = designSpace
+    }
     
     var currrentAxesPositionString : String {
         var t = designSpace.axes.reduce (into: "", {s, axis in
@@ -36,15 +36,15 @@ where Axis: StyledAxisProtocol
         return String(t)
     }
     
-//    var bindingByID: Binding<Int?> {
-//        Binding(get: {selectedStyle?.id}, 
-//                set: {newID in selectedStyle = styles.first(where: {$0.id == newID})})
-//    }
+    //    var bindingByID: Binding<Int?> {
+    //        Binding(get: {selectedStyle?.id}, 
+    //                set: {newID in selectedStyle = styles.first(where: {$0.id == newID})})
+    //    }
     
     public var body: some View {
         VStack  {
             HStack {
-                Picker("Styles", selection: $selectedStyle.by(path: \.id, array: styles)) {
+                Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
                     if selectedStyle == nil {
                         Text("\(currrentAxesPositionString)")
                             .tag(nil as Int?)
@@ -70,6 +70,7 @@ where Axis: StyledAxisProtocol
                     StyledAxisView(axis: axis, 
                                    styleSelection: $selectedStyle,
                                    styles: $styles)
+                    .environment(designSpace)
                 }
             }
             
@@ -91,30 +92,29 @@ where Axis: StyledAxisProtocol
                 updateStyles()
             }
         }
-            .onAppear {
-                updateStyles()
-                selectedStyle = styles[0]
-            }
-            .padding()
-            
-            Spacer() // Push everything up / space at bottom
-            
-        
+        .onAppear {
+            updateStyles()
+            selectedStyle = styles[0]
         }
+        .padding()
         
-        func snapCoordsToStyle() {
-            for (index, axis) in designSpace.axes.enumerated() {
-                let current = axis.position
-                let closest = styles.map {Double($0.coordinates[index])}
-                    .closest(to: current)
-                axis.position = closest
-            }
-        }
+        Spacer() // Push everything up / space at bottom
         
         
     }
     
-    #Preview {
-        AxesView<DemoAxis>()
-            .environment(GLOBAL_SPACE)
+    func snapCoordsToStyle() {
+        for (index, axis) in designSpace.axes.enumerated() {
+            let current = axis.position
+            let closest = styles.map {Double($0.coordinates[index])}
+                .closest(to: current)
+            axis.position = closest
+        }
     }
+    
+    
+}
+
+#Preview {
+    StyledAxesView(designSpace: GLOBAL_SPACE)
+}

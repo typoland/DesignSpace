@@ -128,10 +128,7 @@ extension Space {
     
 public extension Space {
     var styles: [StyleInstance] {
-        let t = Date.now
-        let r = axes.genertateStyles()
-        print ("Space.styles counted in \(Date.now.timeIntervalSince(t).formatted(.number.rounded(increment: 0.00001)))s.")
-        return r
+        axes.genertateStyles()
     }
 } 
 

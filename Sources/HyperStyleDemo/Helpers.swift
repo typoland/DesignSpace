@@ -53,11 +53,15 @@ final public class DemoAxis: StyledAxisProtocol {
 
 var names :[(axis: (long:String, short: String), instanceNames:[String])] =
     [
-        (("weight", "wt"),["Light","Book" ]),//, "Regular", "Medium", "Bold", "Black"]),
-        (("width", "wd"),["Condensed","Narrow"]),//, "Regular", "Wide"]),
-        (("contrast", "co"),["Slab","Text"])//, "Subtitle", "Title"])
+        (("weight", "wt"),["Light","Book", "Regular", "Medium", "Bold", "Black"]),
+        (("width", "wd"),["Condensed","Narrow", "Regular", "Wide"]),
+        (("contrast", "co"),["Slab","Text", "Subtitle", "Title"])
     ]
-   
+//[
+//    (("weight", "wt"),["Light","Book", "Regular"]),
+//    (("width", "wd"),["Condensed","Narrow", "Regular"]),
+//    (("contrast", "co"),["Slab","Text", "Subtitle"])
+//]
 
 
 func makeGlobalAxes<A>() -> Space<A>

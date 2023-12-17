@@ -18,9 +18,6 @@ where Axis: StyledAxisProtocol
     @Binding var styles: [StyleInstance]
     @Environment(Space<Axis>.self) private var space
     
-    
-    
-    
     var body: some View {
         
         VStack {

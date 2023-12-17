@@ -10,7 +10,7 @@ import SwiftUI
 
 extension Binding 
 {
-    func by<ID, Wrapped>(path: KeyPath<Wrapped,ID>, array: [Wrapped]) -> Binding<ID?> 
+    func by<ID, Wrapped>(_ path: KeyPath<Wrapped,ID>, from array: [Wrapped]) -> Binding<ID?> 
     where ID : Equatable,
           Value == Optional<Wrapped>
     {
