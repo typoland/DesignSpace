@@ -32,7 +32,7 @@ where Axis: StyledAxisProtocol
         var t = designSpace.axes.reduce (into: "", {s, axis in
             s += "\(axis.name): \(axis.position.formatted(.number.rounded(increment: 1))) "
         }) 
-        t.removeLast()
+        if !t.isEmpty { t.removeLast() }
         return String(t)
     }
     

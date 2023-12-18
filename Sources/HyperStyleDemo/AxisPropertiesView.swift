@@ -24,6 +24,7 @@ where Axis: StyledAxisProtocol,
         
         HStack {
            Text("Axis:")
+                .frame(width: 60)
             TextField("", text: $axis.name)
                 .frame(width: 100)
             
@@ -60,7 +61,8 @@ where Axis: StyledAxisProtocol,
             Button(action: {
                 space.delete(axis: axis)
                 styles = space.styles
-                styleSelection = styles[0]
+                styleSelection = styles.isEmpty ? nil : styles[0]
+              
             }) {
                 Image(systemName: "trash")
             }
