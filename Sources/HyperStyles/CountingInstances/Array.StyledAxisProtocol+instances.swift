@@ -117,12 +117,16 @@ extension Array where Element: StyledAxisProtocol
         guard !self.isEmpty else { return [] }
         guard self.count > 1 else {
             //TODO: Check this, should return styles of one-dimensional space
-            return []
-        }
-        var result: [StyleInstance]
-        let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
-        
-        result = normalizedAxes.internalInstances().map { internalAxisInstances in
+            return self[0].axisInstances.map { instance in 
+                let selection = AxisInstanceSelection(axisId: self[0].id, 
+                                                      instanceId: instance.id, 
+                                                      position: instance.axisEdgesValues[0])
+               return  StyleInstance(position: [selection])
+            }}
+            var result: [StyleInstance]
+            let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
+            
+            result = normalizedAxes.internalInstances().map { internalAxisInstances in
             let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
                 let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)

@@ -54,7 +54,7 @@ final public class DemoAxis: StyledAxisProtocol {
 var names :[(axis: (long:String, short: String), instanceNames:[String])] =
     [
         (("weight", "wt"),["Light","Book", "Regular", "Medium", "Bold", "Black"]),
-        (("width", "wd"),["Condensed","Narrow", "Regular", "Wide"]),
+        (("width", "wd"),["Condensed","Narrow", "Extended", "Regular", "Wide"]),
         (("contrast", "co"),["Slab","Text", "Subtitle", "Title"])
     ]
 //[
