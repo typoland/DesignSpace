@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import DesignSpace
 import Observation
 
 struct AxisPropertiesView<Axis>: View 
@@ -71,7 +70,7 @@ where Axis: StyledAxisProtocol,
 }
 
 #Preview {
-    var axis = GLOBAL_SPACE.axes[0]
+    let axis = GLOBAL_SPACE.axes[0]
     @State var styles = GLOBAL_SPACE.styles
     @State var styleSelection = styles[0] as Optional
     return AxisPropertiesView(axis: axis,

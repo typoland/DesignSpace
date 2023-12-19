@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import DesignSpace
+
 
 struct EdgeValuesView<Axis>: View
 where Axis: StyledAxisProtocol
@@ -62,12 +62,12 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    var space = Space<DemoAxis>()
-    var axis = space.addAxis(name: "Test", 
+    let space = Space<DemoAxis>()
+    let axis = space.addAxis(name: "Test", 
                              shortName: "ts", 
                              styleName: "Normal", at: 500)
     @State var instance = axis.axisInstances[0]
-    var style = StyleInstance(position: [
+    let style = StyleInstance(position: [
         AxisInstanceSelection(axisId: axis.id, 
                               instanceId: instance.id, 
                               position: 10)])

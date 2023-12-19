@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import DesignSpace
 
 struct AxisStyleInstacesView<Axis>: View
 where Axis: StyledAxisProtocol
@@ -75,7 +74,6 @@ where Axis: StyledAxisProtocol
     @State var axis = axes.addAxis(name: "width", shortName: "wt")
     @State var styleSelection : StyleInstance? = StyleInstance(position: [AxisInstanceSelection(axisId: axis.id, instanceId: axis.axisInstances[0].id, position: 10)])
     @State var styles = axes.styles
-    var instanceSelection: AxisInstance? = axis.axisInstances[0]
     return AxisStyleInstacesView(axis: axis, 
                                  selection: $styleSelection, 
                                  styles: $styles)

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import DesignSpace
 
 typealias Selection = [AxisInstanceSelection]
 
@@ -115,5 +114,5 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    StyledAxesView(designSpace: GLOBAL_SPACE)
+    DesignSpaceView(designSpace: GLOBAL_SPACE)
 }

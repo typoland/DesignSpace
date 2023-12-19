@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import DesignSpace
 import Observation
 
 @Observable
