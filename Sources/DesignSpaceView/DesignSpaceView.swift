@@ -10,7 +10,7 @@ import DesignSpace
 
 typealias Selection = [AxisInstanceSelection]
 
-public struct StyledAxesView<Axis>: View 
+public struct DesignSpaceView<Axis>: View 
 where Axis: StyledAxisProtocol
 {
     //@Environment(Space<Axis>.self) var designSpace
@@ -47,6 +47,7 @@ where Axis: StyledAxisProtocol
                 Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
                     if selectedStyle == nil {
                         Text("\(currrentAxesPositionString)")
+                            .truncationMode(.middle)
                             .tag(nil as Int?)
                     }
                     
@@ -94,7 +95,7 @@ where Axis: StyledAxisProtocol
         }
         .onAppear {
             updateStyles()
-            selectedStyle = styles[0]
+            selectedStyle = styles.isEmpty ? nil : styles[0]
         }
         .padding()
         

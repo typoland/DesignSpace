@@ -24,7 +24,8 @@ where Axis: StyledAxisProtocol
             HStack {
                 TextField("", text: $instance.name)
                 Button(action: {
-                    if let instanceIndex = axis.axisInstances.firstIndex(where: {$0 == instance}) {
+                    if let instanceIndex = axis.axisInstances
+                        .firstIndex(where: {$0 == instance}) {
                         
                         axis.axisInstances.remove(at: instanceIndex)
                         
@@ -36,8 +37,8 @@ where Axis: StyledAxisProtocol
                             
                         }
                     }
-                }
-                    , label: {Image(systemName: "trash")})
+                }, label: {Image(systemName: "trash")}
+                )
             }
             
             ForEach($instance.axisEdgesValues.indices, id:\.self) {index in
