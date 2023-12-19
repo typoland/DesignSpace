@@ -70,8 +70,12 @@ where Axis: StyledAxisProtocol,
     }
 }
 
-//#Preview {
-//    @State var index = 0
-//    return AxisPropertiesView<DemoAxis>(axisId: $index)
-//        .environment(GLOBAL_SPACE)
-//}
+#Preview {
+    var axis = GLOBAL_SPACE.axes[0]
+    @State var styles = GLOBAL_SPACE.styles
+    @State var styleSelection = styles[0] as Optional
+    return AxisPropertiesView(axis: axis,
+                              styleSelection: $styleSelection,
+                              styles: $styles)
+        .environment(GLOBAL_SPACE)
+}

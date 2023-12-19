@@ -99,8 +99,6 @@ where Axis: StyledAxisProtocol
         .padding()
         
         Spacer() // Push everything up / space at bottom
-        
-        
     }
     
     func snapCoordsToStyle() {

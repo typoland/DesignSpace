@@ -31,9 +31,13 @@ where Axis: StyledAxisProtocol
     }
 }
 
-//#Preview {
-//    @State var axes = Axes<Axis>()
-//    @Bindable var axis = axes.addAxis(name: "Wifth", shortName: "wdf")
-//    return StyledAxisView(axis: axis, selectedInstance: .constant(Axis.AxisStyleInstance? = nil))
-//        .environment(axes)
-//}
+#Preview {
+    @State var space = Space<DemoAxis>()
+    @State var styles = space.styles
+    @State var  styleSelection: StyleInstance? = styles[0]
+    var axis = space.addAxis(name: "Wifth", shortName: "wdf")
+    return StyledAxisView(axis: axis, 
+                          styleSelection: $styleSelection, 
+                          styles: $styles)
+        .environment(space)
+}
