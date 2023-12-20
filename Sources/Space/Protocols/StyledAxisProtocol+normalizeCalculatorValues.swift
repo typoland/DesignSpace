@@ -19,7 +19,7 @@ extension StyledAxisProtocol
                           shortName: self.shortName,
                           bounds: self.bounds)
         result.distribution = self.distribution
-        result.axisInstances = self.axisInstances.map { axisInstance in
+        result.instances = self.instances.map { axisInstance in
             var scaledInstance = axisInstance
             scaledInstance.axisEdgesValues = axisInstance.axisEdgesValues
                 .map {$0.normalized(in: self.bounds)}

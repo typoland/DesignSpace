@@ -66,7 +66,7 @@ public extension Array where Element: StyledAxisProtocol
     @discardableResult
     mutating func addInstance(name: String, 
                               to axisIndex: Int, 
-                              at position: Double? = nil) -> Element.AxisStyleInstance
+                              at position: Double? = nil) -> Element.Instance
     {
         let axis = self[axisIndex]
         return addInstance(name: name, to: axis, at: position)
@@ -75,20 +75,20 @@ public extension Array where Element: StyledAxisProtocol
     @discardableResult
     mutating func addInstance(name: String = "Normal", 
                               to axis: Element, 
-                              at position: Double? = nil) -> Element.AxisStyleInstance
+                              at position: Double? = nil) -> Element.Instance
     {
-        var newInstance = Element.AxisStyleInstance()
+        var newInstance = Element.Instance()
         let at = position ?? axis.position
         newInstance.name = name
         
         newInstance.axisEdgesValues = Array<Double>(repeating: at, 
                                                     count: oneAxisEdgesCount)
-        axis.axisInstances.append(newInstance)
-        axis.axisInstances.makeDifferent(path: \.name)
+        axis.instances.append(newInstance)
+        axis.instances.makeDifferent(path: \.name)
         //axis = axis // STUPID ACTION TO TRIGGER VIEW
         distribute()
-        let iIndex = axis.axisInstances.count - 1
-        return axis.axisInstances[iIndex]
+        let iIndex = axis.instances.count - 1
+        return axis.instances[iIndex]
     }
     
     
@@ -96,12 +96,12 @@ public extension Array where Element: StyledAxisProtocol
                                  at instanceIndex: Int, 
                                  at position: Double) 
     {
-        var newInstance = Element.AxisStyleInstance()
+        var newInstance = Element.Instance()
         newInstance.name = "\(self[axisIndex].shortName):\(String(format:"%.0f", position))"
         newInstance.axisEdgesValues = Array<Double>(repeating: position, 
                                                     count: oneAxisEdgesCount)
-        self[axisIndex].axisInstances.insert(newInstance, at: instanceIndex)
-        self[axisIndex].axisInstances.makeDifferent(path: \.name)
+        self[axisIndex].instances.insert(newInstance, at: instanceIndex)
+        self[axisIndex].instances.makeDifferent(path: \.name)
         self[axisIndex] = self[axisIndex] // STUPID ACTION TO TRIGGER VIEW
         distribute()
     }

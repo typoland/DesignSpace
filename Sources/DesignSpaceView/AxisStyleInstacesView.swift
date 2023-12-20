@@ -20,7 +20,7 @@ where Axis: StyledAxisProtocol
     
     
     var instanceIndex: Int? {
-        axis.axisInstances.firstIndex(where: {$0.id == instanceSelection?.id})
+        axis.instances.firstIndex(where: {$0.id == instanceSelection?.id})
     }
     
     var body: some View {
@@ -32,7 +32,7 @@ where Axis: StyledAxisProtocol
                     Text("?")
                         .tag(nil as AxisInstance?)
                 }
-                ForEach(axis.axisInstances) { instance in
+                ForEach(axis.instances) { instance in
                     Text("\(instance.name)")
                         .tag(instance as AxisInstance?)
                 }
@@ -41,38 +41,38 @@ where Axis: StyledAxisProtocol
             //MARK: Edge Values
             if let instanceIndex {
                 EdgeValuesView(axis: axis,
-                               instance: $axis.axisInstances[instanceIndex], 
+                               instance: $axis.instances[instanceIndex], 
                                selection: $selection,
-                styles: $styles)
+                               styles: $styles)
             }
             Spacer()
             
         }.onAppear {
-            if let z = selection?.positionsOnAxes.first(where: {$0.axisId == axis.id}) {
+            if let z = selection?.symbolicCoordinates.first(where: {$0.axisId == axis.id}) {
                 instanceSelection = space[axis, z.instanceId]
             } 
         }.onChange(of: instanceSelection) {
-            print ("instance selection chnged")
-            if let index = selection?.positionsOnAxes.firstIndex(where: {$0.axisId == axis.id}),
+            print ("instance selection chnged \(selection == nil ? "no style selection" : "\(selection!.symbolicCoordinates)" )")
+            if let index = selection?.symbolicCoordinates.firstIndex(where: {$0.axisId == axis.id}),
             let id = instanceSelection?.id {
-                selection?.positionsOnAxes[index].instanceId = id
+                selection?.symbolicCoordinates[index].instanceId = id
             }
             styles = space.styles
         }.onChange(of: selection) {
-            if let z = selection?.positionsOnAxes.first(where: {$0.axisId == axis.id}) {
+            if let z = selection?.symbolicCoordinates.first(where: {$0.axisId == axis.id}) {
                 instanceSelection = space[axis, z.instanceId]
             } 
         }
-        .onChange(of: axis.axisInstances) {
+        .onChange(of: axis.instances) {
             print ("axis.axisInstances chnged")
         }
     }
 }
 
 #Preview {
-    let axes = Space<DemoAxis>()
-    @State var axis = axes.addAxis(name: "width", shortName: "wt")
-    @State var styleSelection : StyleInstance? = StyleInstance(position: [AxisInstanceSelection(axisId: axis.id, instanceId: axis.axisInstances[0].id, position: 10)])
+    let axes = makeDemoAxes() as Space<DemoAxis>
+    @State var axis = axes.axes[0]
+    @State var styleSelection : StyleInstance? = StyleInstance(position: [StyleCoordinate(axisId: axis.id, instanceId: axis.instances[0].id, position: 10)])
     @State var styles = axes.styles
     return AxisStyleInstacesView(axis: axis, 
                                  selection: $styleSelection, 

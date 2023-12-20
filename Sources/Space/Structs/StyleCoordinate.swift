@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AxisInstanceSelection: Hashable, Identifiable
+public struct StyleCoordinate: Hashable, Identifiable
 
 {
     public var axisId: UUID
@@ -22,7 +22,7 @@ public struct AxisInstanceSelection: Hashable, Identifiable
     }
 }
 
-extension AxisInstanceSelection: Equatable {
+extension StyleCoordinate: Equatable {
     public static func == (lhs:Self, rhs:Self) -> Bool {
         lhs.axisId == rhs.axisId
         && lhs.instanceId == rhs.instanceId

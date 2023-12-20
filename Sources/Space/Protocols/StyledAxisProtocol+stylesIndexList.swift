@@ -24,7 +24,7 @@ extension Array where Element: StyledAxisProtocol {
             if level >= dimensions {
                 result.append(styles)
             } else {
-                for styleNr in 0..<self[level].axisInstances.count {
+                for styleNr in 0..<self[level].instances.count {
                     //if self[level].axisInstances[styleNr].isActive {
                         nextAxis(styles: styles+[styleNr], level+1)
                    // }

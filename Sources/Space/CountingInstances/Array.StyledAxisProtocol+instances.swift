@@ -117,8 +117,8 @@ extension Array where Element: StyledAxisProtocol
         guard !self.isEmpty else { return [] }
         guard self.count > 1 else {
             //TODO: Check this, should return styles of one-dimensional space
-            return self[0].axisInstances.map { instance in 
-                let selection = AxisInstanceSelection(axisId: self[0].id, 
+            return self[0].instances.map { instance in 
+                let selection = StyleCoordinate(axisId: self[0].id, 
                                                       instanceId: instance.id, 
                                                       position: instance.axisEdgesValues[0])
                return  StyleInstance(position: [selection])
@@ -133,7 +133,7 @@ extension Array where Element: StyledAxisProtocol
                 
                 let instanceId = internalAxisInstances[axisNr].instanceId
                 
-                return AxisInstanceSelection(axisId: self[axisNr].id, 
+                return StyleCoordinate(axisId: self[axisNr].id, 
                                          instanceId: instanceId, 
                                          position: position)
             }
@@ -144,26 +144,26 @@ extension Array where Element: StyledAxisProtocol
     }
     
     //Internal means normalized !
-    func internalInstances() -> [[AxisInstanceSelection]] {
+    func internalInstances() -> [[StyleCoordinate]] {
         
         func styleValueIndex(edge: SpaceEdge) -> Int {
             let edgeAxisNr = edge.axisNr
             return edge.from.deleteBit(edgeAxisNr)
         }
         
-        var result: [[AxisInstanceSelection]] = []
+        var result: [[StyleCoordinate]] = []
         let hyperspaceQuads: [[SpaceQuad]] = quads
         
         for stylesIndexes in stylesIndexList { // [[Int]]
             
-            var normalizedPosition: [AxisInstanceSelection] = []
+            var normalizedPosition: [StyleCoordinate] = []
             var axesIntersections: [[CoordinatesPair]] = []
             for axisNr in 0..<dimensions {
                 let styleIndex = stylesIndexes[axisNr]
                 
                 var intersections: [CoordinatesPair] = []
                 if hyperspaceQuads[0].isEmpty {
-                    let value = self[axisNr].axisInstances[styleIndex].axisEdgesValues[0]
+                    let value = self[axisNr].instances[styleIndex].axisEdgesValues[0]
                     axesIntersections.append([CoordinatesPair(first:value, second:value)])
                 } else {
                     for hyperspaceQuad in hyperspaceQuads[axisNr] {
@@ -177,8 +177,8 @@ extension Array where Element: StyledAxisProtocol
                         let styleAIndex = stylesIndexes[axisA]
                         let styleBIndex = stylesIndexes[axisB]
                         
-                        let valuesA = self[axisA].axisInstances[styleAIndex].axisEdgesValues
-                        let valuesB = self[axisB].axisInstances[styleBIndex].axisEdgesValues
+                        let valuesA = self[axisA].instances[styleAIndex].axisEdgesValues
+                        let valuesB = self[axisB].instances[styleBIndex].axisEdgesValues
                         
                         let a0 = valuesA[styleValueIndexA0]
                         let a1 = valuesA[styleValueIndexA1]
@@ -191,8 +191,8 @@ extension Array where Element: StyledAxisProtocol
                     }
                     axesIntersections.append(intersections)
                 }
-                let virginPosition = AxisInstanceSelection(axisId: self[axisNr].id, 
-                                                           instanceId: self[axisNr].axisInstances[styleIndex].id, 
+                let virginPosition = StyleCoordinate(axisId: self[axisNr].id, 
+                                                           instanceId: self[axisNr].instances[styleIndex].id, 
                                                            position: Double.nan)
                 normalizedPosition.append(virginPosition)
             }

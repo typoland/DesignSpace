@@ -15,7 +15,6 @@ where Axis: StyledAxisProtocol
     @Binding var styleSelection: StyleInstance?
     @Binding var styles: [StyleInstance]
     
-
     var body: some View {
         VStack {
             GroupBox {
@@ -31,10 +30,10 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    @State var space = Space<DemoAxis>()
+    @State var space = makeDemoAxes() as Space<DemoAxis>
     @State var styles = space.styles
     @State var  styleSelection: StyleInstance? = styles[0]
-    let axis = space.addAxis(name: "Wifth", shortName: "wdf")
+    let axis = space.axes[0]
     return StyledAxisView(axis: axis, 
                           styleSelection: $styleSelection, 
                           styles: $styles)

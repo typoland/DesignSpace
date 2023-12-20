@@ -24,15 +24,15 @@ where Axis: StyledAxisProtocol
             HStack {
                 TextField("", text: $instance.name)
                 Button(action: {
-                    if let instanceIndex = axis.axisInstances
+                    if let instanceIndex = axis.instances
                         .firstIndex(where: {$0 == instance}) {
                         
-                        axis.axisInstances.remove(at: instanceIndex)
+                        axis.instances.remove(at: instanceIndex)
                         
                         
-                        if let firstInstance = axis.axisInstances.first,
-                           let index = selection?.positionsOnAxes.firstIndex(where: {$0.axisId == axis.id}){
-                            selection?.positionsOnAxes[index].instanceId = firstInstance.id
+                        if let firstInstance = axis.instances.first,
+                           let index = selection?.symbolicCoordinates.firstIndex(where: {$0.axisId == axis.id}){
+                            selection?.symbolicCoordinates[index].instanceId = firstInstance.id
                             instance = firstInstance
                             
                         }
@@ -66,9 +66,9 @@ where Axis: StyledAxisProtocol
     let axis = space.addAxis(name: "Test", 
                              shortName: "ts", 
                              styleName: "Normal", at: 500)
-    @State var instance = axis.axisInstances[0]
+    @State var instance = axis.instances[0]
     let style = StyleInstance(position: [
-        AxisInstanceSelection(axisId: axis.id, 
+        StyleCoordinate(axisId: axis.id, 
                               instanceId: instance.id, 
                               position: 10)])
     @State var styleSelection : StyleInstance? = style

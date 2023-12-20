@@ -18,7 +18,7 @@ public extension Array  where Element: StyledAxisProtocol{
 public extension StyledAxisProtocol {
     func distribute() {
         if let distribution = distribution {
-            axisInstances.distribute(factor: distribution)
+            instances.distribute(factor: distribution)
         }
     }
 }

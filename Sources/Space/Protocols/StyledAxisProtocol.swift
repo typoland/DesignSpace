@@ -10,9 +10,9 @@ public protocol StyledAxisProtocol: AnyObject,
                                         Observable 
 {
     
-    typealias AxisStyleInstance = AxisInstance
+    typealias Instance = AxisInstance
   
-    var axisInstances: [AxisInstance] {get set}
+    var instances: [Instance] {get set}
     var distribution: Double? {get set}
     var name: String {get set}
     var shortName: String {get set}
@@ -37,7 +37,7 @@ public extension StyledAxisProtocol {
 
 extension StyledAxisProtocol {
     public var description: String {
-        return "\(Self.self) \"\(name)\" (\(bounds))" + axisInstances.reduce(into: "", {$0 = "\($0)\n\t\($1)"})
+        return "\(Self.self) \"\(name)\" (\(bounds))" + instances.reduce(into: "", {$0 = "\($0)\n\t\($1)"})
     }
 }
 

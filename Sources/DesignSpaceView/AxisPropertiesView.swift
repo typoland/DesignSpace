@@ -44,9 +44,9 @@ where Axis: StyledAxisProtocol,
             Button(action: {
                 do {
                     if let newInstanceID = try space.addInstance(to: axis),
-                       let index = styleSelection?.positionsOnAxes.firstIndex(where: {$0.axisId == axis.id}) {
+                       let index = styleSelection?.symbolicCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
                         print ("add instance" , newInstanceID, index)
-                        styleSelection?.positionsOnAxes[index].instanceId = newInstanceID
+                        styleSelection?.symbolicCoordinates[index].instanceId = newInstanceID
                         styles = space.styles
                     }
                 } catch {
@@ -70,11 +70,12 @@ where Axis: StyledAxisProtocol,
 }
 
 #Preview {
-    let axis = GLOBAL_SPACE.axes[0]
-    @State var styles = GLOBAL_SPACE.styles
+    let DEMO_SPACE = makeDemoAxes() as Space<DemoAxis>
+    let axis = DEMO_SPACE.axes[0]
+    @State var styles = DEMO_SPACE.styles
     @State var styleSelection = styles[0] as Optional
     return AxisPropertiesView(axis: axis,
                               styleSelection: $styleSelection,
                               styles: $styles)
-        .environment(GLOBAL_SPACE)
+        .environment(DEMO_SPACE)
 }

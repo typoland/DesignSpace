@@ -14,9 +14,9 @@ where Element: StyledAxisProtocol
         
         // for every axis and each instance half a values array
         for axisIndex in self.indices {
-            for instanceIndex in self[axisIndex].axisInstances.indices {
+            for instanceIndex in self[axisIndex].instances.indices {
                 do {
-                    try self[axisIndex].axisInstances[instanceIndex].axisEdgesValues.halved(by: goneIndex )
+                    try self[axisIndex].instances[instanceIndex].axisEdgesValues.halved(by: goneIndex )
                 } catch {
                     print (error)
                 }

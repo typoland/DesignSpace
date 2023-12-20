@@ -12,7 +12,7 @@ import Observation
 final public class DemoAxis: StyledAxisProtocol {
     public static func == (lhs: DemoAxis, rhs: DemoAxis) -> Bool {
         lhs.name == rhs.name
-        && lhs.axisInstances == rhs.axisInstances
+        && lhs.instances == rhs.instances
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -23,7 +23,7 @@ final public class DemoAxis: StyledAxisProtocol {
     public var shortName: String
     public var lowerBound: Double
     public var upperBound: Double
-    public var axisInstances: [DesignSpace.AxisInstance] = []
+    public var instances: [DesignSpace.AxisInstance] = []
     public var distribution: Double? = nil
     public var position: Double = 0
     
@@ -44,7 +44,7 @@ final public class DemoAxis: StyledAxisProtocol {
                      axisInstances: [DesignSpace.AxisInstance], 
                      distribution: Double? = nil) {
         self.init(name: name, shortName: shortName, bounds: bounds)
-        self.axisInstances = axisInstances
+        self.instances = axisInstances
         self.distribution = distribution
     }
 } 
@@ -64,7 +64,7 @@ var names :[(axis: (long:String, short: String), instanceNames:[String])] =
 ]
 
 
-func makeGlobalAxes<A>() -> Space<A>
+public func makeDemoAxes<A>() -> Space<A>
 where A: StyledAxisProtocol {
     let space = Space<A>()
     for name in names {
@@ -84,6 +84,5 @@ where A: StyledAxisProtocol {
     }
     return space
 }
-public var GLOBAL_SPACE = makeGlobalAxes() as Space<DemoAxis>
-//var GLOBAL_AXES = Axes<Axis>()
+
 

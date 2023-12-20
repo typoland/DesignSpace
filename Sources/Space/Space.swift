@@ -57,7 +57,7 @@ extension Space {
     @discardableResult
     public func addInstance(name: String = "Normal", 
                              to axisIndex: Array<Axis>.Index,
-                             at position: Double? = nil) -> Axis.AxisStyleInstance 
+                             at position: Double? = nil) -> Axis.Instance 
     {
         axes.addInstance(name: name, 
                          to: axisIndex, 
@@ -67,7 +67,7 @@ extension Space {
     @discardableResult
     public func addInstance(name: String = "Normal", 
                              to axis: Axis,
-                            at position: Double? = nil) throws -> Axis.AxisStyleInstance.ID? 
+                            at position: Double? = nil) throws -> Axis.Instance.ID? 
     {
         if let index = axes.firstIndex(of: axis) {
             return axes.addInstance(name: name, 
@@ -152,15 +152,15 @@ public extension Space {
 
 public extension Space {
     func set(instance: AxisInstance, of axis: Axis) {
-        if let index = axis.axisInstances.firstIndex(of: instance) {
-            axis.axisInstances[index] = instance
+        if let index = axis.instances.firstIndex(of: instance) {
+            axis.instances[index] = instance
         }
     }
     
     func set(edge edgeIndex:Int, of instance: AxisInstance, of axis: Axis, to value: Double) {
         withObservationTracking({
-            if let instanceIndex = axis.axisInstances.firstIndex(of: instance) {
-                axis.axisInstances[instanceIndex]
+            if let instanceIndex = axis.instances.firstIndex(of: instance) {
+                axis.instances[instanceIndex]
                     .axisEdgesValues[edgeIndex] = value
             } 
         }, onChange: {print ("wow")})
@@ -173,7 +173,7 @@ public extension Space {
 public extension Space {
     func name(of style: StyleInstance) -> String {
         var r = ""
-        for positionOnAxis in style.positionsOnAxes {
+        for positionOnAxis in style.symbolicCoordinates {
             if let axis = self[positionOnAxis.axisId],
                let instance = self[axis, positionOnAxis.instanceId] {
                 r += instance.name + " "
@@ -190,6 +190,6 @@ public extension Space {
     }
     
     subscript (axis: Axis, id: UUID) -> AxisInstance? {
-        return axis.axisInstances.first(where: {$0.id == id })
+        return axis.instances.first(where: {$0.id == id })
     }
 }

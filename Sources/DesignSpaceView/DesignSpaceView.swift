@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-typealias Selection = [AxisInstanceSelection]
+typealias Selection = [StyleCoordinate]
 
 public struct DesignSpaceView<Axis>: View 
 where Axis: StyledAxisProtocol
@@ -34,12 +34,7 @@ where Axis: StyledAxisProtocol
         if !t.isEmpty { t.removeLast() }
         return String(t)
     }
-    
-    //    var bindingByID: Binding<Int?> {
-    //        Binding(get: {selectedStyle?.id}, 
-    //                set: {newID in selectedStyle = styles.first(where: {$0.id == newID})})
-    //    }
-    
+        
     public var body: some View {
         VStack  {
             HStack {
@@ -59,7 +54,7 @@ where Axis: StyledAxisProtocol
                 
                 Button("Add Axis") { 
                     let axis = designSpace.addAxis(name: "new", shortName: "new")
-                    selectedStyle?.positionsOnAxes.addAxis(axis)
+                    selectedStyle?.symbolicCoordinates.addAxis(axis)
                     styles = designSpace.styles
                 }
             }
@@ -84,7 +79,7 @@ where Axis: StyledAxisProtocol
                 }
                 selectedStyle = styles.first(where: { style in
                     var ok = true
-                    for (index, pos) in style.positionsOnAxes.enumerated() {
+                    for (index, pos) in style.symbolicCoordinates.enumerated() {
                         ok = ok && Int(pos.position) == Int(designSpace.positions[index])
                     }
                     return ok
@@ -114,5 +109,6 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    DesignSpaceView(designSpace: GLOBAL_SPACE)
+    let DEMO_SPACE = makeDemoAxes() as Space<DemoAxis>
+    return DesignSpaceView(designSpace: DEMO_SPACE)
 }

@@ -14,8 +14,8 @@ where Element: StyledAxisProtocol
     /**
      returns `StyledAxisProtocol.AxisInstance` with proper values count
      */
-    func newInstance(at position: Double) -> Element.AxisStyleInstance {
-        var newInstance = Element.AxisStyleInstance()
+    func newInstance(at position: Double) -> Element.Instance {
+        var newInstance = Element.Instance()
         newInstance.axisEdgesValues = Array<Double>(
             repeating: position,
             count: self.oneAxisEdgesCount

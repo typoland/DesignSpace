@@ -9,27 +9,27 @@ import Foundation
 
 public struct StyleInstance : Identifiable, Hashable
 {
-    init(position: [AxisInstanceSelection]) {
-        self.positionsOnAxes = position
+    init(position: [StyleCoordinate]) {
+        self.symbolicCoordinates = position
     }
     
-    public var positionsOnAxes: [AxisInstanceSelection]
+    public var symbolicCoordinates: [StyleCoordinate]
     public var id: Int { hashValue }
     
     public func hash(into hasher: inout Hasher) {
-        positionsOnAxes.forEach { pos in
+        symbolicCoordinates.forEach { pos in
             hasher.combine(pos.id)
         }
     }
 }
 
 extension Array 
-where Element == AxisInstanceSelection {
+where Element == StyleCoordinate {
     public mutating func addAxis<A>(_ axis: A)
     where A: StyledAxisProtocol 
     {
-        self.append(AxisInstanceSelection(axisId: axis.id, 
-                                                     instanceId: axis.axisInstances.first!.id, 
+        self.append(StyleCoordinate(axisId: axis.id, 
+                                                     instanceId: axis.instances.first!.id, 
                                                      position: axis.position))
     }
     
@@ -38,17 +38,17 @@ where Element == AxisInstanceSelection {
 
 extension StyleInstance {
     public var name : String {
-        positionsOnAxes.reduce(into: "", {$0 = $0+"\($1.instanceId) "})
+        symbolicCoordinates.reduce(into: "", {$0 = $0+"\($1.instanceId) "})
     } 
     public var coordinates: [Int] {
-        positionsOnAxes.map{Int($0.position)}
+        symbolicCoordinates.map{Int($0.position)}
     }
 }
 
 extension StyleInstance {
     public static func == (lhs: Self, rhs: Self) -> Bool {
        lhs.id == rhs.id 
-       && lhs.positionsOnAxes == rhs.positionsOnAxes
+       && lhs.symbolicCoordinates == rhs.symbolicCoordinates
        && lhs.coordinates == rhs.coordinates
     }
 }
