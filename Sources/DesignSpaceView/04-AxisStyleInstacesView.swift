@@ -67,7 +67,8 @@ where Axis: StyledAxisProtocol
             
         }.onAppear {
            selectInstanceSelection()
-        }.onChange(of: instanceSelection) {
+        }.onChange(of: instanceSelection) {old, new in
+            print ("OLD \(old)\nNEW \(new)")
             //print ("instance selection chnged \(selection == nil ? "no style selection" : "\(selection!.symbolicCoordinates)" )")
             if let index = selection?.symbolicCoordinates.firstIndex(where: {$0.axisId == axis.id}) { 
            // let id = instanceSelection?.id {
