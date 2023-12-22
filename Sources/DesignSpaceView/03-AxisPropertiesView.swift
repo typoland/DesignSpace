@@ -14,8 +14,8 @@ where Axis: StyledAxisProtocol,
 {
     
     @Bindable var axis: Axis
-    @Binding var styleSelection: StyleInstance?
-    @Binding var styles: [StyleInstance]
+    @Binding var styleSelection: StyleInstance<Axis>?
+    @Binding var styles: [StyleInstance<Axis>]
     @Environment(Space<Axis>.self) private var space
     
     
@@ -35,7 +35,9 @@ where Axis: StyledAxisProtocol,
                       format: .number)
             .frame(width: 45)
             Slider(value: $axis.position,
-                   in: axis.bounds)
+                   in: axis.bounds) { _ in
+                styleSelection?.removeFromSelection(axis: axis)
+            }
             TextField("",
                       value: $axis.upperBound, 
                       format: .number)
@@ -58,7 +60,7 @@ where Axis: StyledAxisProtocol,
             })
             
             Button(action: {
-                space.delete(axis: axis)
+                styleSelection?.delete(axis: axis)
                 styles = space.styles
                 styleSelection = styles.isEmpty ? nil : styles[0]
               

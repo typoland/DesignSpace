@@ -12,8 +12,8 @@ where Axis: StyledAxisProtocol
 
 {
     @Bindable var axis: Axis
-    @Binding var styleSelection: StyleInstance?
-    @Binding var styles: [StyleInstance]
+    @Binding var styleSelection: StyleInstance<Axis>?
+    @Binding var styles: [StyleInstance<Axis>]
     
     var body: some View {
         VStack {

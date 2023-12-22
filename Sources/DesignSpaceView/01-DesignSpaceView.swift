@@ -14,9 +14,9 @@ where Axis: StyledAxisProtocol
 {
     //@Environment(Space<Axis>.self) var designSpace
     
-    @State var selectedStyle: StyleInstance? = nil
+    @State var selectedStyle: StyleInstance<Axis>? = nil
     @State var spaceStyleIndex: Int = 0
-    @State var styles:  [StyleInstance] = []
+    @State var styles:  [StyleInstance<Axis>] = []
     @State var snapToStyle: Bool = false
     var designSpace: Space<Axis>
     func updateStyles() {
@@ -39,13 +39,14 @@ where Axis: StyledAxisProtocol
         VStack  {
             HStack {
                 Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
-                    if selectedStyle == nil {
+                    if selectedStyle?.id == 0 {
+                    
                         Text("\(currrentAxesPositionString)")
                             .truncationMode(.middle)
-                            .tag(nil as Int?)
+                            .tag(selectedStyle?.id as Int?)
                     }
                     
-                    ForEach(styles) { style in 
+                    ForEach($styles) { $style in 
                         Text("\(designSpace.name(of: style)) - \(style.coordinates.description)")
                             .tag(style.id as Int?)
                     }
@@ -53,8 +54,8 @@ where Axis: StyledAxisProtocol
                 Toggle("snap", isOn: $snapToStyle)
                 
                 Button("Add Axis") { 
-                    let axis = designSpace.addAxis(name: "new", shortName: "new")
-                    selectedStyle?.symbolicCoordinates.addAxis(axis)
+                    //let axis = designSpace.addAxis(name: "new", shortName: "new")
+                    selectedStyle?.addAxis()
                     styles = designSpace.styles
                 }
             }
@@ -77,15 +78,19 @@ where Axis: StyledAxisProtocol
                         designSpace.axes[index].position = position
                     }
                 }
-                selectedStyle = styles.first(where: { style in
-                    var ok = true
-                    for (index, pos) in style.symbolicCoordinates.enumerated() {
-                        ok = ok && Int(pos.position) == Int(designSpace.positions[index])
-                    }
-                    return ok
-                })
+                
+//                selectedStyle = styles.first(where: { style in
+//                    var ok = true
+//                    for (index, pos) in style.enumerated() {
+//                        ok = ok && Int(pos.position) == Int(designSpace.positions[index])
+//                    }
+//                    return ok
+//                })
                 updateStyles()
             }
+            #if DEBUG
+            Text("\(selectedStyle.debugDescription)")
+            #endif
         }
         .onAppear {
             updateStyles()

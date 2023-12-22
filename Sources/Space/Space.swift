@@ -127,8 +127,8 @@ extension Space {
 }
     
 public extension Space {
-    var styles: [StyleInstance] {
-        axes.genertateStyles()
+    var styles: [StyleInstance<Axis>] {
+        axes.genertateStyles(from: self)
     }
 } 
 
@@ -143,7 +143,7 @@ public extension Space {
         }
     }
     
-    func setPositions(by styleInstance: StyleInstance) {
+    func setPositions(by styleInstance: StyleInstance<Axis>) {
         styleInstance.coordinates.enumerated()
             .forEach({axes[$0].position = Double($1)})
     }
@@ -171,7 +171,7 @@ public extension Space {
 }
 
 public extension Space {
-    func name(of style: StyleInstance) -> String {
+    func name(of style: StyleInstance<Axis>) -> String {
         var r = ""
         for positionOnAxis in style.symbolicCoordinates {
             if let axis = self[positionOnAxis.axisId],
