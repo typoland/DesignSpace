@@ -15,14 +15,22 @@ where Axis: StyledAxisProtocol
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
-    //@Binding var styles : [StyleInstance<Axis>]
     
-    @State var instanceSelection : AxisInstance? = nil
+    var instanceSelection : Binding<AxisInstance>? {
+        guard let instance = styleSelection?.selectedInstance(for: axis) else {return nil}
+        return Binding<AxisInstance>(
+            get: {
+                instance
+            }, 
+            set: { newInstance in
+                styleSelection?.change(axis: axis, instance: newInstance)
+            })
+    }
     
     @Environment(Space<Axis>.self) private var space
     
     var instanceIndex: Int? {
-        axis.instances.firstIndex(where: {$0.id == instanceSelection?.id})
+        axis.instances.firstIndex(where: {$0.id == instanceSelection?.wrappedValue.id})
     }
     
     var body: some View {
@@ -31,9 +39,8 @@ where Axis: StyledAxisProtocol
             //MARK: Axis Instance Picker
             if instanceSelection != nil {
                 AxisInstancePicker(axis: axis, 
-                                   instanceSelection: $instanceSelection.forShure(),
-                                   styleSelection: $styleSelection)
-                                   //styles: styles)
+                                   instanceSelection: instanceSelection!)
+                                   //styleSelection: $styleSelection)
             }
             
             //MARK: Axis Instance
@@ -46,10 +53,10 @@ where Axis: StyledAxisProtocol
                         //MARK: Delete Instance
                         Button(action: {
                             if let instanceIndex = axis.instances.firstIndex(where: {
-                                $0 == instanceSelection
+                                $0 == instanceSelection?.wrappedValue
                             }) {
                                 axis.instances.remove(at: instanceIndex)
-                                instanceSelection = nil
+                                //instanceSelection = nil
                             }
                         }, label: {Image(systemName: "trash")}
                         )
@@ -72,20 +79,20 @@ where Axis: StyledAxisProtocol
 //                //                selectInstanceSelection()
 //            }
             
-            .onAppear {
-                print ("🟢 appear")
-                selectInstanceSelection()
-            }
+//            .onAppear {
+//                print ("🟢 appear")
+//                selectInstanceSelection()
+//            }
             Spacer()
         }
         
     }
 
     
-    func selectInstanceSelection() {
-        print (#function, Date.now)
-        instanceSelection = styleSelection?.selectedInstance(for: axis)
-    }
+//    func selectInstanceSelection() {
+//        print (#function, Date.now)
+//        instanceSelection = styleSelection?.selectedInstance(for: axis)
+//    }
 }
 
 #Preview {

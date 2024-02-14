@@ -16,7 +16,6 @@ where Axis: StyledAxisProtocol
     
     @State var selectedStyle: StyleInstance<Axis>? = nil
     @State var spaceStyleIndex: Int = 0
-    //@State var styles:  [StyleInstance<Axis>] = []
     @State var snapToStyle: Bool = false
     var designSpace: Space<Axis>
 //    func updateStyles() {
@@ -40,17 +39,20 @@ where Axis: StyledAxisProtocol
     public var body: some View {
         VStack  {
             HStack {
-                
-                Picker("Styles", selection: $selectedStyle.by(\.id, from: designSpace.styles)) {
-                    if selectedStyle == nil || selectedStyle?.id == 0 {
-                        let _ = print ("id 0 - \(selectedStyle)")
+                let styles = designSpace.styles
+                Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
+                    if selectedStyle?.id == 0 {
                         Text("\(currrentAxesPositionString)")
                             .truncationMode(.middle)
                             .tag(0 as Int?)
                     } 
+                    if selectedStyle == nil {
+                        Text("\(currrentAxesPositionString)")
+                            .truncationMode(.middle)
+                            .tag(nil as Int?)
+                    } 
                     
-                    ForEach(designSpace.styles) { style in 
-                        //let _ = print ("existing \(style) \(style.id)")
+                    ForEach(styles) { style in 
                         Text("\(designSpace.name(of: style)) - \(style.coordinatesRounded.description)")
                             .tag(style.id as Int?)
                     }
@@ -59,9 +61,8 @@ where Axis: StyledAxisProtocol
                 Toggle("snap", isOn: $snapToStyle)
                 
                 Button("Add Axis") { 
-                    //let axis = designSpace.addAxis(name: "new", shortName: "new")
-                    selectedStyle?.addAxis()
-                    //styles = designSpace.styles
+                    let axis = designSpace.addAxis(name: "New", shortName: "nw")
+                    selectedStyle?.add(axis: axis)
                 }
             }
             

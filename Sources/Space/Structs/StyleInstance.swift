@@ -36,11 +36,13 @@ where Axis: StyledAxisProtocol
 
 
 extension StyleInstance {
-    
-     mutating func addAxis()
+    func indexOf(axis: Axis) -> Int? {
+        styleCoordinates.firstIndex(where: {$0.axisId == axis.id})
+    }
+    mutating func add(axis: Axis)
     {
-        let axis = space.addAxis(name: "New", shortName: "nw")
-        if let firstInstanceID = axis.instances.first?.id {
+        if indexOf(axis: axis) == nil,
+           let firstInstanceID = axis.instances.first?.id {
             styleCoordinates.append(StyleCoordinate(axisId: axis.id, 
                                                     instanceId: firstInstanceID, 
                                                     position: axis.position))
@@ -49,7 +51,9 @@ extension StyleInstance {
     
      mutating func delete(axis: Axis)
     {
-        space.delete(axis: axis)
+        if let index = indexOf(axis: axis) {
+            styleCoordinates.remove(at: index)
+        }
     }
     
     /// Changes Style Instance, mainly for selection.
@@ -62,15 +66,17 @@ extension StyleInstance {
     mutating func change(axis: Axis, 
                          instance: AxisInstance?) { 
                        //  styles: [StyleInstance<Axis>]) {
-        print ("CHANGE", axis.name, instance?.name, space.styles.count)
+        //print ("CHANGE", axis.name, instance?.name, space.styles.count)
         
         guard let instance else {
             removeFromSelection(axis: axis)
-            print ("instance is nil"); return
+            //print ("instance is nil"); 
+            return
         }
         
         guard self.styleCoordinates.count == space.axes.count else {
-            print ("differntt axes count"); return
+            //print ("differntt axes count"); 
+            return
         }
         
         //find all styles, which contains current selected axis and instance
@@ -92,7 +98,9 @@ extension StyleInstance {
             style.styleCoordinates.first(where: {coordinate in
                 coordinate.axisId == axis.id && coordinate.instanceId == instance.id
             }) != nil
-        }) else { print ("no new style"); return }
+        }) else { 
+            //print ("no new style"); 
+            return }
         
         self = newStyle
         
