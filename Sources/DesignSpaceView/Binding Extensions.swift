@@ -27,4 +27,16 @@ extension Binding
             }
         })
     }
+    
+    func forShure<Wrapped>() -> Binding <Wrapped> 
+    where Value == Optional<Wrapped> {
+        Binding<Wrapped> (get: {
+//            print ("getting")
+            return wrappedValue! 
+        }, set: {
+//            print ("setting")
+            wrappedValue = $0
+        }
+        )
+    }
 }

@@ -7,13 +7,14 @@
 
 import Foundation
 
+/// `StyleCoordinate`  has defined IDs of `axis` and `axisInstance` and value for this coordinate
 public struct StyleCoordinate: Hashable, Identifiable
 
 {
     public var axisId: UUID
     public var instanceId: UUID
-    
     public var position: Double
+    
     public var id: Int { hashValue }
     
     public func hash(into hasher: inout Hasher) {

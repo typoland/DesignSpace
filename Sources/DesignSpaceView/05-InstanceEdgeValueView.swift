@@ -20,10 +20,7 @@ where Axis: StyledAxisProtocol
     var body: some View {
         
         VStack {
-            HStack {
-                
-            }
-            
+
             ForEach($instance.axisEdgesValues.indices, id:\.self) {index in
                 HStack {
                     

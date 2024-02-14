@@ -16,6 +16,7 @@ where Axis: StyledAxisProtocol,
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
     @Binding var styles: [StyleInstance<Axis>]
+    
     @Environment(Space<Axis>.self) private var space
     
     
@@ -46,9 +47,9 @@ where Axis: StyledAxisProtocol,
             Button(action: {
                 do {
                     if let newInstanceID = try space.addInstance(to: axis),
-                       let index = styleSelection?.symbolicCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
+                       let index = styleSelection?.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
                         print ("add instance" , newInstanceID, index)
-                        styleSelection?.symbolicCoordinates[index].instanceId = newInstanceID
+                        styleSelection?.styleCoordinates[index].instanceId = newInstanceID
                         styles = space.styles
                     }
                 } catch {
@@ -61,9 +62,11 @@ where Axis: StyledAxisProtocol,
             
             Button(action: {
                 styleSelection?.delete(axis: axis)
+                space.delete(axis: axis)
                 styles = space.styles
-                styleSelection = styles.isEmpty ? nil : styles[0]
-              
+                if styles.isEmpty {
+                    styleSelection =  nil 
+                }
             }) {
                 Image(systemName: "trash")
             }

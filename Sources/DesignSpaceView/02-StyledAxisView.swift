@@ -22,7 +22,8 @@ where Axis: StyledAxisProtocol
                                    styleSelection: $styleSelection,
                                    styles: $styles)
                 AxisStyleInstacesView(axis: axis, 
-                                      selection: $styleSelection) 
+                                      styleSelection: $styleSelection,
+                                      styles: styles) 
             }
         }
     }

@@ -144,7 +144,7 @@ public extension Space {
     }
     
     func setPositions(by styleInstance: StyleInstance<Axis>) {
-        styleInstance.coordinates.enumerated()
+        styleInstance.coordinatesRounded.enumerated()
             .forEach({axes[$0].position = Double($1)})
     }
 }
@@ -173,7 +173,7 @@ public extension Space {
 public extension Space {
     func name(of style: StyleInstance<Axis>) -> String {
         var r = ""
-        for positionOnAxis in style.symbolicCoordinates {
+        for positionOnAxis in style.styleCoordinates {
             if let axis = self[positionOnAxis.axisId],
                let instance = self[axis, positionOnAxis.instanceId] {
                 r += instance.name + " "
