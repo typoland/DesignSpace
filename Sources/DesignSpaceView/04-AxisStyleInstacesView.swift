@@ -15,7 +15,7 @@ where Axis: StyledAxisProtocol
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
-    var styles : [StyleInstance<Axis>]
+    //@Binding var styles : [StyleInstance<Axis>]
     
     @State var instanceSelection : AxisInstance? = nil
     
@@ -32,8 +32,8 @@ where Axis: StyledAxisProtocol
             if instanceSelection != nil {
                 AxisInstancePicker(axis: axis, 
                                    instanceSelection: $instanceSelection.forShure(),
-                                   styleSelection: $styleSelection,
-                                   styles: styles)
+                                   styleSelection: $styleSelection)
+                                   //styles: styles)
             }
             
             //MARK: Axis Instance
@@ -55,7 +55,9 @@ where Axis: StyledAxisProtocol
                         )
                     }
                     EdgeValuesView(axis: axis,
-                                   instance: $axis.instances[instanceIndex]) 
+                                   instance: $axis.instances[instanceIndex])
+                                  // styles: $styles)
+                    
                 }
                 Spacer()
                 
@@ -92,8 +94,8 @@ where Axis: StyledAxisProtocol
     @State var styleSelection : StyleInstance? = StyleInstance(position: [StyleCoordinate(axisId: axis.id, instanceId: axis.instances[0].id, position: 10)], space: axes)
     @State var styles = axes.styles
     return AxisStyleInstacesView(axis: axis, 
-                                 styleSelection: $styleSelection, 
-                                 styles: axes.styles)
+                                 styleSelection: $styleSelection) 
+                                // styles: $styles)
     //    
     .environment(axes)
 }

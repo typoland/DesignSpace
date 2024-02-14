@@ -20,6 +20,7 @@ public struct StyleCoordinate: Hashable, Identifiable
     public func hash(into hasher: inout Hasher) {
         hasher.combine(axisId)
         hasher.combine(instanceId)
+        //don't hash position
     }
 }
 

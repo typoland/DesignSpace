@@ -13,17 +13,17 @@ where Axis: StyledAxisProtocol
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
-    @Binding var styles: [StyleInstance<Axis>]
+    //@Binding var styles: [StyleInstance<Axis>]
     
     var body: some View {
         VStack {
             GroupBox {
                 AxisPropertiesView(axis: axis, 
-                                   styleSelection: $styleSelection,
-                                   styles: $styles)
+                                   styleSelection: $styleSelection)
+                                 //  styles: $styles)
                 AxisStyleInstacesView(axis: axis, 
-                                      styleSelection: $styleSelection,
-                                      styles: styles) 
+                                      styleSelection: $styleSelection)
+                                     // styles: $styles) 
             }
         }
     }
@@ -35,7 +35,7 @@ where Axis: StyledAxisProtocol
     @State var  styleSelection: StyleInstance? = styles[0]
     let axis = space.axes[0]
     return StyledAxisView(axis: axis, 
-                          styleSelection: $styleSelection, 
-                          styles: $styles)
+                          styleSelection: $styleSelection)
+                    //      styles: $styles)
         .environment(space)
 }

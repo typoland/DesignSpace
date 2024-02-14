@@ -60,23 +60,23 @@ extension StyleInstance {
     ///   - instance: change Axis Instance selection, remove from selection if `nil`
     ///   - styles: array of generated styles to search in. 
     mutating func change(axis: Axis, 
-                         instance: AxisInstance?, 
-                         styles: [StyleInstance<Axis>]) {
-        print ("CHANGE", axis.name, instance?.name, styles.count)
+                         instance: AxisInstance?) { 
+                       //  styles: [StyleInstance<Axis>]) {
+        print ("CHANGE", axis.name, instance?.name, space.styles.count)
         
         guard let instance else {
             removeFromSelection(axis: axis)
-            return
+            print ("instance is nil"); return
         }
         
         guard self.styleCoordinates.count == space.axes.count else {
-            return
+            print ("differntt axes count"); return
         }
         
         //find all styles, which contains current selected axis and instance
         // Znajdź style, których koordynaty i instancje pozostałych axisów są identyczne z aktualnymi koordynatami
        
-        let axisStylesGroup = styles.filter { style in
+        let axisStylesGroup = space.styles.filter { style in
             var ok = true
             let compareCoordinates = zip(style.styleCoordinates, styleCoordinates)
             compareCoordinates.forEach { (styleCoordinate, thisCoordinate) in
@@ -92,7 +92,7 @@ extension StyleInstance {
             style.styleCoordinates.first(where: {coordinate in
                 coordinate.axisId == axis.id && coordinate.instanceId == instance.id
             }) != nil
-        }) else { return }
+        }) else { print ("no new style"); return }
         
         self = newStyle
         

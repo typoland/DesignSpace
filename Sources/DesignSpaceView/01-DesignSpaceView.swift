@@ -16,12 +16,12 @@ where Axis: StyledAxisProtocol
     
     @State var selectedStyle: StyleInstance<Axis>? = nil
     @State var spaceStyleIndex: Int = 0
-    @State var styles:  [StyleInstance<Axis>] = []
+    //@State var styles:  [StyleInstance<Axis>] = []
     @State var snapToStyle: Bool = false
     var designSpace: Space<Axis>
-    func updateStyles() {
-        styles = designSpace.styles
-    }
+//    func updateStyles() {
+//        styles = designSpace.styles
+//    }
     
     //Init must be here because it's in package
     public init(designSpace: Space<Axis>) {
@@ -41,7 +41,7 @@ where Axis: StyledAxisProtocol
         VStack  {
             HStack {
                 
-                Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
+                Picker("Styles", selection: $selectedStyle.by(\.id, from: designSpace.styles)) {
                     if selectedStyle == nil || selectedStyle?.id == 0 {
                         let _ = print ("id 0 - \(selectedStyle)")
                         Text("\(currrentAxesPositionString)")
@@ -49,7 +49,7 @@ where Axis: StyledAxisProtocol
                             .tag(0 as Int?)
                     } 
                     
-                    ForEach($styles) { $style in 
+                    ForEach(designSpace.styles) { style in 
                         //let _ = print ("existing \(style) \(style.id)")
                         Text("\(designSpace.name(of: style)) - \(style.coordinatesRounded.description)")
                             .tag(style.id as Int?)
@@ -61,15 +61,15 @@ where Axis: StyledAxisProtocol
                 Button("Add Axis") { 
                     //let axis = designSpace.addAxis(name: "new", shortName: "new")
                     selectedStyle?.addAxis()
-                    styles = designSpace.styles
+                    //styles = designSpace.styles
                 }
             }
             
             ScrollView (.vertical, showsIndicators: true) {
                 ForEach(designSpace.axes.indices, id:\.self) { axisNr in
                     StyledAxisView(axis: designSpace.axes[axisNr], 
-                                   styleSelection: $selectedStyle,
-                                   styles: $styles)
+                                   styleSelection: $selectedStyle)
+                                   //styles: $styles)
                     .environment(designSpace)
                 }
             }
@@ -83,22 +83,22 @@ where Axis: StyledAxisProtocol
                     }
                 }
                 
-                selectedStyle = styles.first(where: { style in
+                selectedStyle = designSpace.styles.first(where: { style in
                     var ok = true
                     for (index, pos) in style.styleCoordinates.enumerated() {
                         ok = ok && Int(pos.position) == Int(designSpace.positions[index])
                     }
                     return ok
                 })
-                updateStyles()
+                //updateStyles()
             }
             #if DEBUG
             Text("SELECTED STYLE:\n\(selectedStyle.debugDescription)")
             #endif
         }
         .onAppear {
-            updateStyles()
-            selectedStyle = styles.isEmpty ? nil : styles[0]
+            //updateStyles()
+            selectedStyle = designSpace.styles.isEmpty ? nil : designSpace.styles[0]
         }
         .padding()
         
@@ -108,7 +108,7 @@ where Axis: StyledAxisProtocol
     func snapCoordsToStyle() {
         for (index, axis) in designSpace.axes.enumerated() {
             let current = axis.position
-            let closest = styles.map {Double($0.coordinatesRounded[index])}
+            let closest = designSpace.styles.map {Double($0.coordinatesRounded[index])}
                 .closest(to: current)
             axis.position = closest
         }

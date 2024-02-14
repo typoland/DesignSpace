@@ -15,7 +15,7 @@ where Axis: StyledAxisProtocol,
     
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
-    @Binding var styles: [StyleInstance<Axis>]
+    //@Binding var styles: [StyleInstance<Axis>]
     
     @Environment(Space<Axis>.self) private var space
     
@@ -50,7 +50,7 @@ where Axis: StyledAxisProtocol,
                        let index = styleSelection?.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
                         print ("add instance" , newInstanceID, index)
                         styleSelection?.styleCoordinates[index].instanceId = newInstanceID
-                        styles = space.styles
+                        //styles = space.styles
                     }
                 } catch {
                     print (error)
@@ -63,8 +63,8 @@ where Axis: StyledAxisProtocol,
             Button(action: {
                 styleSelection?.delete(axis: axis)
                 space.delete(axis: axis)
-                styles = space.styles
-                if styles.isEmpty {
+                //styles = space.styles
+                if space.styles.isEmpty {
                     styleSelection =  nil 
                 }
             }) {
@@ -80,7 +80,7 @@ where Axis: StyledAxisProtocol,
     @State var styles = DEMO_SPACE.styles
     @State var styleSelection = styles[0] as Optional
     return AxisPropertiesView(axis: axis,
-                              styleSelection: $styleSelection,
-                              styles: $styles)
+                              styleSelection: $styleSelection)
+                              //styles: $styles)
         .environment(DEMO_SPACE)
 }

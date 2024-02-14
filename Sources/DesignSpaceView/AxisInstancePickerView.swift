@@ -14,7 +14,7 @@ where Axis: StyledAxisProtocol {
     @Bindable var axis: Axis
     @Binding var instanceSelection: AxisInstance
     @Binding var styleSelection: StyleInstance<Axis>?
-    var styles: [StyleInstance<Axis>]
+    //var styles: [StyleInstance<Axis>]
     
     var body: some View {
         Picker("", selection: $instanceSelection) {
@@ -28,8 +28,8 @@ where Axis: StyledAxisProtocol {
                 
                     print ("💛 change instance selection", styleSelection)
                     styleSelection?.change(axis: axis, 
-                                           instance: instanceSelection, 
-                                           styles: styles)
+                                           instance: instanceSelection) 
+                                         //  styles: styles)
                
             }
     }

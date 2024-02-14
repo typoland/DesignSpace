@@ -81,6 +81,7 @@ extension Space {
 extension Space { 
     
     struct CornerCoordinate {
+        
         enum Bound: CustomStringConvertible {
             case min
             case max
@@ -98,8 +99,8 @@ extension Space {
     }
     
     public func instanceEdgeValueName(of axis: Axis, 
-                               edge index: Int, 
-                               long: Bool = true) -> String {
+                                      edge index: Int, 
+                                      long: Bool = true) -> String {
         ///axes.edges zwracają wszystkie krawędzie przestrzeni pogrupowane po wymiarze.
         ///Ponieważ wartości axisInstance.values przypisane są do krawędzi
         ///Interesują nas tylko te wierzchołki z których wychodzą krawędzie

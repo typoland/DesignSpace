@@ -14,7 +14,7 @@ where Axis: StyledAxisProtocol
     
     @Bindable var axis: Axis
     @Binding var instance: AxisInstance
-    //@Binding var styles: [StyleInstance]
+    //@Binding var styles: [StyleInstance<Axis>]
     @Environment(Space<Axis>.self) private var space
     
     var body: some View {
@@ -29,6 +29,8 @@ where Axis: StyledAxisProtocol
                             .frame(width: 100)
                         Slider(value: $instance.axisEdgesValues[index], 
                                in: axis.bounds) {_ in
+                            print ("instance \(instance.name) changed")
+                            space.styles
                         }
                                .controlSize(.mini)
                         Text ("\(instance.axisEdgesValues[index], specifier:"%0.0f")")
@@ -54,10 +56,8 @@ where Axis: StyledAxisProtocol
     @State var styleSelection : StyleInstance<DemoAxis>? = style
     @State var styles = space.styles
     return EdgeValuesView(axis: axis,
-                          instance: $instance
-                          //selection: $styleSelection,
-//                          styles: $styles
-    )
+                          instance: $instance)
+  
     .environment(space)
                          
 }
