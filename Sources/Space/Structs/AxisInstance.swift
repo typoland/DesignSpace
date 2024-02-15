@@ -26,7 +26,7 @@ import Foundation
 ///
 ///For two dimensional designspace this is simple. But in more dimensional designspace lines dosn't like to cross each other, so finding a right coordinates is a tricky job.
 
-public struct AxisInstance: Identifiable, Hashable {
+public struct AxisInstance: Identifiable, Hashable, Codable {
     public static func == (lhs: AxisInstance, rhs: AxisInstance) -> Bool {
         lhs.id == rhs.id 
         //&& lhs.axisEdgesValues == rhs.axisEdgesValues

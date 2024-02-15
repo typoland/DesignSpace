@@ -3,15 +3,13 @@
 
 import Foundation
 import Observation
+import HyperSpace
 
-public protocol StyledAxisProtocol: AnyObject, 
-                                        Identifiable, 
-                                        Hashable, 
-                                        Observable 
+public protocol StyledAxisProtocol: SpaceAxisProtocol, Codable
 {
     
     typealias Instance = AxisInstance
-  
+
     var instances: [Instance] {get set}
     var distribution: Double? {get set}
     var name: String {get set}
@@ -27,17 +25,4 @@ public protocol StyledAxisProtocol: AnyObject,
          bounds: ClosedRange<Double>)
 }
 
-public extension StyledAxisProtocol {
-    var bounds: ClosedRange<Double> {
-        get {lowerBound...upperBound}
-        set {lowerBound = newValue.lowerBound
-            upperBound = newValue.upperBound}
-    }
-}
-
-extension StyledAxisProtocol {
-    public var description: String {
-        return "\(Self.self) \"\(name)\" (\(bounds))" + instances.reduce(into: "", {$0 = "\($0)\n\t\($1)"})
-    }
-}
 

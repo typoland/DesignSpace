@@ -16,14 +16,23 @@ let package = Package(
             targets: ["DesignSpace"]),
         
     ],
-    
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+      
+        .package(name: "HyperSpace",
+                 path: "/Users/lukasz/Documents/XCode/NewHyperValuePackages/HyperSpace/"),
+        
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DesignSpace"),
+            name: "DesignSpace", 
+            dependencies: ["HyperSpace"]),
         .testTarget(
             name: "DesignSpaceTests",
             dependencies: ["DesignSpace"]),
+        
+        
     ]
 )

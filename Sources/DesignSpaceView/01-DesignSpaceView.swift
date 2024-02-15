@@ -17,13 +17,13 @@ where Axis: StyledAxisProtocol
     @State var selectedStyle: StyleInstance<Axis>? = nil
     @State var spaceStyleIndex: Int = 0
     @State var snapToStyle: Bool = false
-    var designSpace: Space<Axis>
+    var designSpace: DesignSpace<Axis>
 //    func updateStyles() {
 //        styles = designSpace.styles
 //    }
     
     //Init must be here because it's in package
-    public init(designSpace: Space<Axis>) {
+    public init(designSpace: DesignSpace<Axis>) {
         self.designSpace = designSpace
     }
     
@@ -119,6 +119,6 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    let DEMO_SPACE = makeDemoAxes() as Space<DemoAxis>
+    let DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     return DesignSpaceView(designSpace: DEMO_SPACE)
 }

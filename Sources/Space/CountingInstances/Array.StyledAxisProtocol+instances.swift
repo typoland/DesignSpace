@@ -103,7 +103,8 @@ extension Array where Element: Collection,
     }
 }
 
-extension Array where Element: StyledAxisProtocol
+extension Array where Element: StyledAxisProtocol, 
+                        Element: Codable
 
 {
     /**
@@ -112,7 +113,7 @@ extension Array where Element: StyledAxisProtocol
     
     public typealias Axis = Element
     
-    public func genertateStyles(from space: Space<Axis>) -> [StyleInstance<Axis>]
+    public func genertateStyles(from space: DesignSpace<Axis>) -> [StyleInstance<Axis>]
     {
         guard !self.isEmpty else { return [] }
         guard self.count > 1 else {

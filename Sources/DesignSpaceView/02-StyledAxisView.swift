@@ -30,7 +30,7 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    @State var space = makeDemoAxes() as Space<DemoAxis>
+    @State var space = makeDemoAxes() as DesignSpace<DemoAxis>
     @State var styles = space.styles
     @State var  styleSelection: StyleInstance? = styles[0]
     let axis = space.axes[0]

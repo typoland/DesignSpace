@@ -16,11 +16,11 @@ where Axis: StyledAxisProtocol
              && lhs.styleCoordinates == rhs.styleCoordinates        
     }
     
-    init(position: [StyleCoordinate], space: Space<Axis>) {
+    init(position: [StyleCoordinate], space: DesignSpace<Axis>) {
         self.styleCoordinates = position
         self.space = space
     }
-    var space: Space<Axis>
+    var space: DesignSpace<Axis>
     public var styleCoordinates: [StyleCoordinate]
     
     public var id: Int { space.axes.count == styleCoordinates.count 

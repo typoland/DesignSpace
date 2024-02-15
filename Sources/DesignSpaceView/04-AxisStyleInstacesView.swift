@@ -27,7 +27,7 @@ where Axis: StyledAxisProtocol
             })
     }
     
-    @Environment(Space<Axis>.self) private var space
+    @Environment(DesignSpace<Axis>.self) private var space
     
     var instanceIndex: Int? {
         axis.instances.firstIndex(where: {$0.id == instanceSelection?.wrappedValue.id})
@@ -96,7 +96,7 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    let axes = makeDemoAxes() as Space<DemoAxis>
+    let axes = makeDemoAxes() as DesignSpace<DemoAxis>
     @State var axis = axes.axes[0]
     @State var styleSelection : StyleInstance? = StyleInstance(position: [StyleCoordinate(axisId: axis.id, instanceId: axis.instances[0].id, position: 10)], space: axes)
     @State var styles = axes.styles

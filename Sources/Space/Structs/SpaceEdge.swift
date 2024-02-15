@@ -65,8 +65,6 @@ extension SpaceEdge{
     }
 }
 
-
-
 extension SpaceEdge{
     ///Number of all hypercube edges. 1D has one eedge, 2D has 4, 3D has 12...
     static func edgesCount (for dimensionsNr: Int) -> Int {
@@ -93,7 +91,5 @@ extension SpaceEdge {
         }
         return result
     }
-    
-    
 }
 

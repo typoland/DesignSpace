@@ -16,7 +16,7 @@ where Axis: StyledAxisProtocol,
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
     
-    @Environment(Space<Axis>.self) private var space
+    @Environment(DesignSpace<Axis>.self) private var space
     
     
     var body: some View {
@@ -71,7 +71,7 @@ where Axis: StyledAxisProtocol,
 }
 
 #Preview {
-    let DEMO_SPACE = makeDemoAxes() as Space<DemoAxis>
+    let DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     let axis = DEMO_SPACE.axes[0]
     @State var styles = DEMO_SPACE.styles
     @State var styleSelection = styles[0] as Optional

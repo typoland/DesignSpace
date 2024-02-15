@@ -8,8 +8,13 @@
 import Foundation
 import Observation
 
+
 @Observable
-final public class DemoAxis: StyledAxisProtocol {
+final public class DemoAxis: StyledAxisProtocol, Codable {
+    public init(name: String, bounds: ClosedRange<Double>) {
+        fatalError("not implemented, use init(name, shortname, bounds")
+    }
+    
     public static func == (lhs: DemoAxis, rhs: DemoAxis) -> Bool {
         lhs.name == rhs.name
         && lhs.instances == rhs.instances
@@ -23,7 +28,7 @@ final public class DemoAxis: StyledAxisProtocol {
     public var shortName: String
     public var lowerBound: Double
     public var upperBound: Double
-    public var instances: [DesignSpace.AxisInstance] = []
+    public var instances: [AxisInstance] = []
     public var distribution: Double? = nil
     public var position: Double = 0
     
@@ -41,7 +46,7 @@ final public class DemoAxis: StyledAxisProtocol {
     convenience init(name: String, 
                      shortName: String, 
                      bounds: ClosedRange<Double>, 
-                     axisInstances: [DesignSpace.AxisInstance], 
+                     axisInstances: [AxisInstance], 
                      distribution: Double? = nil) {
         self.init(name: name, shortName: shortName, bounds: bounds)
         self.instances = axisInstances
@@ -64,9 +69,9 @@ var names :[(axis: (long:String, short: String), instanceNames:[String])] =
 ]
 
 
-public func makeDemoAxes<A>() -> Space<A>
+public func makeDemoAxes<A>() -> DesignSpace<A>
 where A: StyledAxisProtocol {
-    let space = Space<A>()
+    let space = DesignSpace<A>()
     for name in names {
         
         let axis = space.addAxis(name: name.axis.long, 

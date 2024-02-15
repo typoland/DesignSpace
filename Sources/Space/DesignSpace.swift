@@ -7,23 +7,21 @@
 
 import Foundation
 import Observation
+import HyperSpace
 
-@Observable
-public class Space<Axis>
-
+@Observable 
+public class DesignSpace<Axis>: SpaceProtocol, Codable
 where Axis: StyledAxisProtocol
 {
-    public internal (set) var axes: [Axis] = []
-    
-    public init() {}
-    
-    public var count: Int {
-        axes.count
+    public private (set) var axes: [Axis] = []
+    required public init() {
+        self.axes = []
     }
 }
 
-
-extension Space {
+extension DesignSpace 
+where Axis: StyledAxisProtocol
+{
 
     @discardableResult
     public func addAxis(name: String, 
@@ -35,6 +33,7 @@ extension Space {
                       styleName: styleName, 
                       at: at)
     }
+    
     @discardableResult
     public func insertAxis(name: String, 
                            shortName: String,
@@ -74,11 +73,11 @@ extension Space {
                                     to: index, 
                                     at: position).id
         } 
-        throw Errors.axisDoesNotExistInSpace(axisName: axis.name)
+        throw SpaceErrors.axisDoesNotExistInSpace(axisName: axis.name)
     }
 }
 
-extension Space { 
+extension DesignSpace { 
     
     struct CornerCoordinate {
         
@@ -127,13 +126,13 @@ extension Space {
     }
 }
     
-public extension Space {
+public extension DesignSpace {
     var styles: [StyleInstance<Axis>] {
         axes.genertateStyles(from: self)
     }
 } 
 
-public extension Space {
+public extension DesignSpace {
     
     var positions: [Double] {
         get {axes.map{$0.position}}
@@ -151,7 +150,7 @@ public extension Space {
 }
 
 
-public extension Space {
+public extension DesignSpace {
     func set(instance: AxisInstance, of axis: Axis) {
         if let index = axis.instances.firstIndex(of: instance) {
             axis.instances[index] = instance
@@ -171,7 +170,7 @@ public extension Space {
     }
 }
 
-public extension Space {
+public extension DesignSpace {
     func name(of style: StyleInstance<Axis>) -> String {
         var r = ""
         for positionOnAxis in style.styleCoordinates {
@@ -185,7 +184,7 @@ public extension Space {
 } 
 
 
-public extension Space {
+public extension DesignSpace {
     subscript (id: UUID) -> Axis? {
         return axes.first(where: {$0.id == id})
     }

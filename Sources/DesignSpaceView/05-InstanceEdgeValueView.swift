@@ -15,7 +15,7 @@ where Axis: StyledAxisProtocol
     @Bindable var axis: Axis
     @Binding var instance: AxisInstance
     //@Binding var styles: [StyleInstance<Axis>]
-    @Environment(Space<Axis>.self) private var space
+    @Environment(DesignSpace<Axis>.self) private var space
     
     var body: some View {
         
@@ -45,7 +45,7 @@ where Axis: StyledAxisProtocol
 }
 
 #Preview {
-    let space = Space<DemoAxis>()
+    let space = DesignSpace<DemoAxis>()
     let axis = space.addAxis(name: "Test", 
                              shortName: "ts", 
                              styleName: "Normal", at: 500)

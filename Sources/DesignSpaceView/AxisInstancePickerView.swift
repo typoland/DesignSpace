@@ -23,6 +23,5 @@ where Axis: StyledAxisProtocol {
                     .tag(axis.instances[index] as AxisInstance)
             }
         }
-        .frame(width: instanceSelection == nil ? 250 : 28)
     }
 }

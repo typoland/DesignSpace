@@ -33,7 +33,7 @@ public extension Array where Element: StyledAxisProtocol
                           styleName: String = "Normal",
                           at position: Double? = nil) -> Element  {
         //var newAxes:[Element] = self
-        append(Element(name: name, shortName: shortName, bounds: 0...1000))
+        append(StyledAxis(name: name, shortName: shortName, bounds: 0...1000))
         addInstance(name: styleName, 
                     to: self.count-1, 
                     at: position)
