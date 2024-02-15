@@ -55,6 +55,7 @@ extension Array where Element: BinaryFloatingPoint {
     }
 }
 
+import HyperSpace
 extension Array where Element: Collection,
                       Element.Index == Int,
                       Element.Element == Double

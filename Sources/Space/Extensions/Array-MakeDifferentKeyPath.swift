@@ -12,7 +12,7 @@ public extension Array {
      
      var a = [Some(x:"a"), Some(x:"a"), Some(x:"a")]
      a.makeDifferent(path: \.x)
-     >>> [Some(x:"a"), Some(x:"a1"), Some(x:"a2")]
+     >[Some(x:"a"), Some(x:"a1"), Some(x:"a2")]
      */
     mutating func makeDifferent<T>(path: WritableKeyPath<Element, T>)
     where T: Hashable & StringProtocol

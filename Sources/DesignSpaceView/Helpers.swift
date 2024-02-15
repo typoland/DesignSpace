@@ -11,6 +11,8 @@ import Observation
 
 @Observable
 final public class DemoAxis: StyledAxisProtocol, Codable {
+    
+
     public init(name: String, bounds: ClosedRange<Double>) {
         fatalError("not implemented, use init(name, shortname, bounds")
     }
@@ -18,6 +20,10 @@ final public class DemoAxis: StyledAxisProtocol, Codable {
     public static func == (lhs: DemoAxis, rhs: DemoAxis) -> Bool {
         lhs.name == rhs.name
         && lhs.instances == rhs.instances
+    }
+    
+    public static func < (lhs: DemoAxis, rhs: DemoAxis) -> Bool {
+        lhs.name < rhs.name
     }
     
     public func hash(into hasher: inout Hasher) {

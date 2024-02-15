@@ -71,7 +71,7 @@ extension SpaceEdge{
         return dimensionsNr * oneAxisEdgesCount(for: dimensionsNr)
     }
 }
-
+import HyperSpace
 extension SpaceEdge {
     ///Array of all edges of  `dimensions` hypercube, grouped by axis
     public static func edges(of dimensions: Int) -> [[Self]] {

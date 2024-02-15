@@ -26,3 +26,9 @@ public protocol StyledAxisProtocol: SpaceAxisProtocol, Codable
 }
 
 
+extension StyledAxisProtocol {
+    public var description: String {
+        return "\(Self.self) \"\(name)\" (\(bounds))" + instances.reduce(into: "", {$0 = "\($0)\n\t\($1)"})
+    }
+}
+
