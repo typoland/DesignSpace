@@ -5,7 +5,7 @@ import Foundation
 import Observation
 import HyperSpace
 
-public protocol StyledAxisProtocol: SpaceAxisProtocol, Codable
+public protocol StyledAxisProtocol: SpaceAxisProtocol, HasCoordinateProtocol, Codable
 {
     
     typealias Instance = AxisInstance
