@@ -20,7 +20,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
       
         .package(name: "HyperSpace",
-                 path: "/Users/lukasz/Documents/XCode/NewHyperValuePackages/HyperSpace/"),
+                 path: "../HyperSpace/"),
         
     ],
     targets: [
