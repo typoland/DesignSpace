@@ -22,7 +22,7 @@ extension StyledAxisProtocol
         result.instances = self.instances.map { axisInstance in
             var scaledInstance = axisInstance
             scaledInstance.axisEdgesValues = axisInstance.axisEdgesValues
-                .map {$0.normalized(in: upperBound...lowerBound)}
+                .map {$0.normalized(in: lowerBound...upperBound)}
             return scaledInstance
         }
         return result
