@@ -26,13 +26,6 @@ public protocol StyledAxisProtocol: SpaceAxisProtocol,
          bounds: ClosedRange<Double>)
 }
 
-extension StyledAxisProtocol {
-    public var bounds: ClosedRange<Double> {
-        get {lowerBound...upperBound}
-        set {lowerBound = newValue.lowerBound
-            upperBound = newValue.upperBound}
-    }
-}
 
 extension StyledAxisProtocol {
     public var description: String {

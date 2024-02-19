@@ -15,8 +15,8 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
     public  var axes: [Axis] = []
-    required public init() {
-        self.axes = []
+    required public init(_ axes: [Axis] = []) {
+        self.axes = axes
     }
 }
 

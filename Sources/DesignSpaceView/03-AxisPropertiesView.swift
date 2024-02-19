@@ -20,9 +20,8 @@ where Axis: StyledAxisProtocol,
     
     @Environment(DesignSpace<Axis>.self) private var designSpace
     
-    
+    @State var test: Double = 0
     var body: some View {
-        
         HStack {
            Text("Axis:")
                 .frame(width: 60)
@@ -36,10 +35,12 @@ where Axis: StyledAxisProtocol,
                       value: $axis.lowerBound, 
                       format: .number)
             .frame(width: 45)
-//            Slider(value: $axis.at,
-//                   in: axis.bounds) { _ in
-//                styleSelection?.removeFromSelection(axis: axis)
-//            }
+            Slider(value: $test,
+                   in: axis.bounds) 
+            { what in
+                print (what)
+                styleSelection?.removeFromSelection(axis: axis)
+            }
             TextField("",
                       value: $axis.upperBound, 
                       format: .number)
@@ -68,6 +69,10 @@ where Axis: StyledAxisProtocol,
             }) {
                 Image(systemName: "trash")
             }
+            .onAppear(perform: {
+                test = axis.at
+            })
+            
         }
     }
 }
@@ -79,6 +84,5 @@ where Axis: StyledAxisProtocol,
     @State var styleSelection = styles[0] as Optional
     return AxisPropertiesView(axis: axis,
                               styleSelection: $styleSelection)
-                              //styles: $styles)
         .environment(DEMO_SPACE)
 }
