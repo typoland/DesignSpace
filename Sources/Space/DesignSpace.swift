@@ -10,7 +10,7 @@ import Observation
 import HyperSpace
 
 @Observable 
-public class DesignSpace<Axis>: SpaceProtocol, Codable
+public final class DesignSpace<Axis>: SpaceProtocol, Codable
 where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
