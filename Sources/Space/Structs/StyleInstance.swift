@@ -7,9 +7,10 @@
 
 import Foundation
 import SwiftUI
+import HyperSpace
 
 public struct StyleInstance<Axis>: Identifiable, Hashable
-where Axis: StyledAxisProtocol
+where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
 {
     public static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id 
@@ -45,7 +46,7 @@ extension StyleInstance {
            let firstInstanceID = axis.instances.first?.id {
             styleCoordinates.append(StyleCoordinate(axisId: axis.id, 
                                                     instanceId: firstInstanceID, 
-                                                    position: axis.position))
+                                                    position: axis.at))
         }
     }
     

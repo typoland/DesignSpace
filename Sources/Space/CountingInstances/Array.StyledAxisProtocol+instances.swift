@@ -105,6 +105,7 @@ extension Array where Element: Collection,
 }
 
 extension Array where Element: StyledAxisProtocol, 
+                        Element: HasPositionProtocol,
                         Element: Codable
 
 {

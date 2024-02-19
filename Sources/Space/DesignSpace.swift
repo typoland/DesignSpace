@@ -11,9 +11,10 @@ import HyperSpace
 
 @Observable 
 public class DesignSpace<Axis>: SpaceProtocol, Codable
-where Axis: StyledAxisProtocol
+where Axis: StyledAxisProtocol,
+      Axis: HasPositionProtocol
 {
-    public private (set) var axes: [Axis] = []
+    public  var axes: [Axis] = []
     required public init() {
         self.axes = []
     }
@@ -135,17 +136,17 @@ public extension DesignSpace {
 public extension DesignSpace {
     
     var positions: [Double] {
-        get {axes.map{$0.position}}
+        get {axes.map{$0.at}}
         set {
             for index in 0..<newValue.count {
-                axes[index].position = newValue[index]
+                axes[index].at = newValue[index]
             }
         }
     }
     
     func setPositions(by styleInstance: StyleInstance<Axis>) {
         styleInstance.coordinatesRounded.enumerated()
-            .forEach({axes[$0].position = Double($1)})
+            .forEach({axes[$0].at = Double($1)})
     }
 }
 

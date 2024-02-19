@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import HyperSpace
 
 
 
 
 struct AxisStyleInstacesView<Axis>: View
-where Axis: StyledAxisProtocol
+where Axis: StyledAxisProtocol,
+      Axis: HasPositionProtocol
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?

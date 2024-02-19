@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import HyperSpace
 
 
 struct EdgeValuesView<Axis>: View
-where Axis: StyledAxisProtocol
+where Axis: StyledAxisProtocol,
+      Axis: HasPositionProtocol
 {
     
     @Bindable var axis: Axis

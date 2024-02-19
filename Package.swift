@@ -19,8 +19,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
       
-        .package(name: "HyperSpace",
-                 path: "../HyperSpace/"),
+        .package(url: "https://github.com/typoland/HyperSpace", branch: "main"),
         
     ],
     targets: [

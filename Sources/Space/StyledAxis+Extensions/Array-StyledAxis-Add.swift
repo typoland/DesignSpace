@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HyperSpace
 
 public enum axesOperation {
     case add
@@ -13,7 +14,8 @@ public enum axesOperation {
     case delete(Int)
 }
 
-public extension Array where Element: StyledAxisProtocol
+public extension Array where Element: StyledAxisProtocol, 
+                                Element: HasPositionProtocol
 
 {
     //TODO: make function throwable
@@ -31,12 +33,12 @@ public extension Array where Element: StyledAxisProtocol
     mutating func addAxis(name: String = "new", 
                           shortName: String = "new", 
                           styleName: String = "Normal",
-                          at position: Double? = nil) -> Element  {
+                          at: Double? = nil) -> Element  {
         //var newAxes:[Element] = self
         append(StyledAxis(name: name, shortName: shortName, bounds: 0...1000))
         addInstance(name: styleName, 
                     to: self.count-1, 
-                    at: position)
+                    at: at)
         axisWasAdded(on: self.count-1)
         reorganize()
         return self[self.count - 1]
@@ -47,11 +49,11 @@ public extension Array where Element: StyledAxisProtocol
                              at index: Int, 
                              instaceName: 
                              String = "Normal",
-                             at position: Double? = nil ) -> Element {
+                             at: Double? = nil ) -> Element {
         insert(Element(name: "new", shortName: "new", bounds: 0...1000), at: index)
         addInstance(name: instaceName, 
                     to: index, 
-                    at: position)
+                    at: at)
         axisWasAdded(on: index)
         reorganize()
         return self[index]
@@ -66,19 +68,19 @@ public extension Array where Element: StyledAxisProtocol
     @discardableResult
     mutating func addInstance(name: String, 
                               to axisIndex: Int, 
-                              at position: Double? = nil) -> Element.Instance
+                              at: Double? = nil) -> Element.Instance
     {
         let axis = self[axisIndex]
-        return addInstance(name: name, to: axis, at: position)
+        return addInstance(name: name, to: axis, at: at)
     }
     
     @discardableResult
     mutating func addInstance(name: String = "Normal", 
                               to axis: Element, 
-                              at position: Double? = nil) -> Element.Instance
+                              at: Double? = nil) -> Element.Instance
     {
         var newInstance = Element.Instance()
-        let at = position ?? axis.position
+        let at = at ?? axis.at
         newInstance.name = name
         
         newInstance.axisEdgesValues = Array<Double>(repeating: at, 
@@ -107,3 +109,16 @@ public extension Array where Element: StyledAxisProtocol
     }
 }
 
+extension PositionOnAxis
+ {
+    
+    func at<A>(axis: A) -> Double
+    where A: SpaceAxisProtocol,
+          A: SpaceCoordinateProtocol {
+        switch self {
+        case .max: return axis.upperBound
+        case .min: return axis.lowerBound
+        case .number(let number): return number
+        }
+    }
+}

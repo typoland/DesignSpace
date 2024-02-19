@@ -7,16 +7,18 @@
 
 import SwiftUI
 import Observation
+import HyperSpace
 
 struct AxisPropertiesView<Axis>: View 
 where Axis: StyledAxisProtocol, 
-        Axis: Observable
+      Axis: HasPositionProtocol,
+      Axis: Observable
 {
     
     @Bindable var axis: Axis
     @Binding var styleSelection: StyleInstance<Axis>?
     
-    @Environment(DesignSpace<Axis>.self) private var space
+    @Environment(DesignSpace<Axis>.self) private var designSpace
     
     
     var body: some View {
@@ -34,10 +36,10 @@ where Axis: StyledAxisProtocol,
                       value: $axis.lowerBound, 
                       format: .number)
             .frame(width: 45)
-            Slider(value: $axis.position,
-                   in: axis.bounds) { _ in
-                styleSelection?.removeFromSelection(axis: axis)
-            }
+//            Slider(value: $axis.at,
+//                   in: axis.bounds) { _ in
+//                styleSelection?.removeFromSelection(axis: axis)
+//            }
             TextField("",
                       value: $axis.upperBound, 
                       format: .number)
@@ -45,7 +47,7 @@ where Axis: StyledAxisProtocol,
             
             Button(action: {
                 do {
-                    if let newInstanceID = try space.addInstance(to: axis),
+                    if let newInstanceID = try designSpace.addInstance(to: axis),
                        let index = styleSelection?.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
                         styleSelection?.styleCoordinates[index].instanceId = newInstanceID
                     }
@@ -59,8 +61,8 @@ where Axis: StyledAxisProtocol,
             
             Button(action: {
                 styleSelection?.delete(axis: axis)
-                space.delete(axis: axis)
-                if space.styles.isEmpty {
+                designSpace.delete(axis: axis)
+                if designSpace.styles.isEmpty {
                     styleSelection =  nil 
                 }
             }) {

@@ -7,10 +7,14 @@
 
 import Foundation
 import Observation
+import HyperSpace
 
 
 @Observable
-final public class DemoAxis: StyledAxisProtocol, Codable {
+final public class DemoAxis: StyledAxisProtocol, 
+                                HasPositionProtocol, 
+                                Codable 
+{
     
 
     public init(name: String, bounds: ClosedRange<Double>) {
@@ -36,7 +40,7 @@ final public class DemoAxis: StyledAxisProtocol, Codable {
     public var upperBound: Double
     public var instances: [AxisInstance] = []
     public var distribution: Double? = nil
-    public var position: Double = 0
+    public var position: PositionOnAxis = .min
     
     public var id = UUID()
     

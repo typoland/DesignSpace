@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import HyperSpace
 
 typealias Selection = [StyleCoordinate]
 
 public struct DesignSpaceView<Axis>: View 
-where Axis: StyledAxisProtocol
+where Axis: StyledAxisProtocol,
+      Axis: HasPositionProtocol
 {
     //@Environment(Space<Axis>.self) var designSpace
     
@@ -30,7 +32,7 @@ where Axis: StyledAxisProtocol
     //Delivers axes coordinates as string for Picker menu
     var currrentAxesPositionString : String {
         var t = designSpace.axes.reduce (into: "", {s, axis in
-            s += "\(axis.name): \(axis.position.formatted(.number.rounded(increment: 1))) "
+            s += "\(axis.name): \(axis.at.formatted(.number.rounded(increment: 1))) "
         }) 
         if !t.isEmpty { t.removeLast() }
         return String(t)
@@ -80,7 +82,7 @@ where Axis: StyledAxisProtocol
                     snapCoordsToStyle()
                 } else {
                     for (index, position) in new.enumerated() {
-                        designSpace.axes[index].position = position
+                        designSpace.axes[index].position = PositionOnAxis(axis: designSpace.axes[index], at: position)
                     }
                 }
                 
@@ -108,10 +110,10 @@ where Axis: StyledAxisProtocol
     
     func snapCoordsToStyle() {
         for (index, axis) in designSpace.axes.enumerated() {
-            let current = axis.position
+            let current = axis.at
             let closest = designSpace.styles.map {Double($0.coordinatesRounded[index])}
                 .closest(to: current)
-            axis.position = closest
+            designSpace.axes[index].position = PositionOnAxis(axis: designSpace.axes[index], at: closest)
         }
     }
     
