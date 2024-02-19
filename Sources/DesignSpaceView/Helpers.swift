@@ -16,7 +16,6 @@ final public class DemoAxis: StyledAxisProtocol,
                                 Codable 
 {
     
-
     public init(name: String, bounds: ClosedRange<Double>) {
         fatalError("not implemented, use init(name, shortname, bounds")
     }
@@ -38,8 +37,8 @@ final public class DemoAxis: StyledAxisProtocol,
     public var shortName: String
     public var lowerBound: Double
     public var upperBound: Double
-    public var instances: [AxisInstance] = []
-    public var distribution: Double? = nil
+    public var instances: [AxisInstance]
+    public var distribution: Double?
     public var position: PositionOnAxis = .min
     
     public var id = UUID()
@@ -47,10 +46,13 @@ final public class DemoAxis: StyledAxisProtocol,
     public init(name: String, 
          shortName: String, 
          bounds: ClosedRange<Double>) {
+        self.instances = []
         self.name = name
         self.shortName = shortName
         self.lowerBound = bounds.lowerBound
         self.upperBound = bounds.upperBound
+        self.distribution = nil
+        self.position = .min
     }
     
     convenience init(name: String, 
@@ -59,6 +61,7 @@ final public class DemoAxis: StyledAxisProtocol,
                      axisInstances: [AxisInstance], 
                      distribution: Double? = nil) {
         self.init(name: name, shortName: shortName, bounds: bounds)
+        
         self.instances = axisInstances
         self.distribution = distribution
     }

@@ -14,7 +14,7 @@ public class DesignSpace<Axis>: SpaceProtocol, Codable
 where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
-    public  var axes: [Axis] = []
+    public  var axes: [Axis] 
     required public init(_ axes: [Axis] = []) {
         self.axes = axes
     }
