@@ -128,7 +128,7 @@ extension DesignSpace {
 }
     
 public extension DesignSpace {
-    var styles: [StyleInstance<Axis>] {
+    var styles: [Style<Axis>] {
         axes.genertateStyles(from: self)
     }
 } 
@@ -144,7 +144,7 @@ public extension DesignSpace {
         }
     }
     
-    func setPositions(by styleInstance: StyleInstance<Axis>) {
+    func setPositions(by styleInstance: Style<Axis>) {
         styleInstance.coordinatesRounded.enumerated()
             .forEach({axes[$0].at = Double($1)})
     }
@@ -172,14 +172,24 @@ public extension DesignSpace {
 }
 
 public extension DesignSpace {
-    func name(of style: StyleInstance<Axis>) -> String {
+    func name(of style: Style<Axis>) -> String {
         var r = ""
-        for positionOnAxis in style.styleCoordinates {
-            if let axis = self[positionOnAxis.axisId],
-               let instance = self[axis, positionOnAxis.instanceId] {
-                r += instance.name + " "
+        if axes.count == style.styleCoordinates.filter({$0.instanceId != nil}).count {
+            for positionOnAxis in style.styleCoordinates {
+                if let axis = self[positionOnAxis.axisId],
+                   let instance = positionOnAxis.instanceId,
+                   let instance = self[axis, instance] {
+                    r += instance.name + " "
+                }
+            } 
+            
+        } else {
+            for styleCoordinate in style.styleCoordinates {
+                if let axis = axes.first(where: {$0.id == styleCoordinate.axisId}) {
+                    r += "\(axis.name): \(axis.at.formatted(.number.precision(.fractionLength(0...1)))), "
+                }
             }
-        } 
+        }
         return r.split(separator: " ").joined(separator: " ")
     }
 } 

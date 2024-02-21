@@ -16,11 +16,17 @@ where Axis: StyledAxisProtocol,
 {
     
     @Bindable var axis: Axis
-    @Binding var styleSelection: StyleInstance<Axis>?
+    @Binding var styleSelection: Style<Axis>
     
     @Environment(DesignSpace<Axis>.self) private var designSpace
     
-    @State var test: Double = 0
+    var position: Binding<Double> {
+        Binding<Double>(get: {axis.at}, 
+                        set: {axis.position = PositionOnAxis(axis: axis, at: $0)})
+    }
+    
+    
+    
     var body: some View {
         HStack {
            Text("Axis:")
@@ -35,22 +41,25 @@ where Axis: StyledAxisProtocol,
                       value: $axis.lowerBound, 
                       format: .number)
             .frame(width: 45)
-            Slider(value: $test,
+            Slider(value: position,
                    in: axis.bounds) 
-            { what in
-                print (what)
-                styleSelection?.removeFromSelection(axis: axis)
+            { isSliding in
+                if !isSliding {
+                    styleSelection.changeInstance(in: axis,
+                                                  to: nil)
+                    print (styleSelection)
+                }
             }
             TextField("",
-                      value: $axis.upperBound, 
+                      value: position, 
                       format: .number)
             .frame(width: 45)
             
             Button(action: {
                 do {
                     if let newInstanceID = try designSpace.addInstance(to: axis),
-                       let index = styleSelection?.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
-                        styleSelection?.styleCoordinates[index].instanceId = newInstanceID
+                       let index = styleSelection.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
+                        styleSelection.styleCoordinates[index].instanceId = newInstanceID
                     }
                 } catch {
                     print (error)
@@ -61,18 +70,17 @@ where Axis: StyledAxisProtocol,
             })
             
             Button(action: {
-                styleSelection?.delete(axis: axis)
+                styleSelection.removeInstance(from: axis)
                 designSpace.delete(axis: axis)
                 if designSpace.styles.isEmpty {
-                    styleSelection =  nil 
+                    let coordinates =  designSpace.axes.map { axis in
+                        StyleCoordinate(axisId: axis.id, at: axis.at)
+                    }
+                    styleSelection = Style(in: designSpace)
                 }
             }) {
                 Image(systemName: "trash")
             }
-            .onAppear(perform: {
-                test = axis.at
-            })
-            
         }
     }
 }
@@ -81,7 +89,7 @@ where Axis: StyledAxisProtocol,
     let DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     let axis = DEMO_SPACE.axes[0]
     @State var styles = DEMO_SPACE.styles
-    @State var styleSelection = styles[0] as Optional
+    @State var styleSelection = styles[0]
     return AxisPropertiesView(axis: axis,
                               styleSelection: $styleSelection)
         .environment(DEMO_SPACE)

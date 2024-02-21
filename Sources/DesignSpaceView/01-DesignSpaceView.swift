@@ -16,9 +16,10 @@ where Axis: StyledAxisProtocol,
 {
     //@Environment(Space<Axis>.self) var designSpace
     
-    @State var selectedStyle: StyleInstance<Axis>? = nil
+    @State var selectedStyle: Style<Axis>//? = nil
     @State var spaceStyleIndex: Int = 0
     @State var snapToStyle: Bool = false
+    
     var designSpace: DesignSpace<Axis>
 //    func updateStyles() {
 //        styles = designSpace.styles
@@ -27,6 +28,7 @@ where Axis: StyledAxisProtocol,
     //Init must be here because it's in package
     public init(designSpace: DesignSpace<Axis>) {
         self.designSpace = designSpace
+        self.selectedStyle = designSpace.styles.first ?? Style(in: designSpace)
     }
     
     //Delivers axes coordinates as string for Picker menu
@@ -41,22 +43,16 @@ where Axis: StyledAxisProtocol,
     public var body: some View {
         VStack  {
             HStack {
-                let styles = designSpace.styles
-                Picker("Styles", selection: $selectedStyle.by(\.id, from: styles)) {
-                    if selectedStyle?.id == 0 {
-                        Text("\(currrentAxesPositionString)")
+                Picker("Styles", selection: $selectedStyle) { //}.by(\.id, from: styles)) {
+                    if selectedStyle.id == 0 {
+                        Text("\(selectedStyle.name)")
                             .truncationMode(.middle)
-                            .tag(0 as Int?)
+                            .tag(selectedStyle)
                     } 
-                    if selectedStyle == nil {
-                        Text("\(currrentAxesPositionString)")
-                            .truncationMode(.middle)
-                            .tag(nil as Int?)
-                    } 
-                    
+                    let styles = designSpace.styles
                     ForEach(styles) { style in 
                         Text("\(designSpace.name(of: style)) - \(style.coordinatesRounded.description)")
-                            .tag(style.id as Int?)
+                            .tag(style as Style)
                     }
                 }
           
@@ -64,7 +60,7 @@ where Axis: StyledAxisProtocol,
                 
                 Button("Add Axis") { 
                     let axis = designSpace.addAxis(name: "New", shortName: "nw")
-                    selectedStyle?.add(axis: axis)
+                    selectedStyle.add(axis: axis)
                 }
             }
             
@@ -82,32 +78,44 @@ where Axis: StyledAxisProtocol,
                     snapCoordsToStyle()
                 } else {
                     for (index, position) in new.enumerated() {
-                        designSpace.axes[index].position = PositionOnAxis(axis: designSpace.axes[index], at: position)
+                        designSpace.axes[index].at = position
                     }
                 }
                 
                 selectedStyle = designSpace.styles.first(where: { style in
                     var ok = true
                     for (index, pos) in style.styleCoordinates.enumerated() {
-                        ok = ok && Int(pos.position) == Int(designSpace.positions[index])
+                        ok = ok && Int(pos.at) == Int(designSpace.positions[index])
                     }
                     return ok
-                })
+                }) ?? Style(in: designSpace)
                 //updateStyles()
             }
             #if DEBUG
-            Text("SELECTED STYLE:\n\(selectedStyle.debugDescription)")
+            Text("SELECTED STYLE:\n\(selectedStyle.description)")
             #endif
         }
+        .padding()
         .onAppear {
             //updateStyles()
-            selectedStyle = designSpace.styles.isEmpty ? nil : designSpace.styles[0]
+            selectedStyle = designSpace.styles.first ?? Style(in: designSpace)
         }
-        .padding()
+//        .onChange(of: selectedStyle) {
+//            print (selectedStyle)
+//            for styleCoordinate in selectedStyle.styleCoordinates ?? [] {
+//                if let axisIndex = designSpace.axes.firstIndex(where: {$0.id == styleCoordinate.axisId}) {
+//                    designSpace.axes[axisIndex].at = styleCoordinate.at
+//                }
+//            }
+//        }
+        
+    
         
         Spacer() // Push everything up / space at bottom
     }
-    
+    func adaptAxesPositions() {
+        
+    }
     func snapCoordsToStyle() {
         for (index, axis) in designSpace.axes.enumerated() {
             let current = axis.at

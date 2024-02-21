@@ -16,16 +16,17 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
     @Bindable var axis: Axis
-    @Binding var styleSelection: StyleInstance<Axis>?
+    @Binding var styleSelection: Style<Axis>
     
     var instanceSelection : Binding<AxisInstance>? {
-        guard let instance = styleSelection?.selectedInstance(for: axis) else {return nil}
+        guard let instance = styleSelection.selectedInstance(for: axis) else {return nil}
         return Binding<AxisInstance>(
             get: {
                 instance
             }, 
             set: { newInstance in
-                styleSelection?.change(axis: axis, instance: newInstance)
+                styleSelection.changeInstance(in: axis,
+                                              to: newInstance)
             })
     }
     
@@ -39,11 +40,11 @@ where Axis: StyledAxisProtocol,
         HStack (alignment: .top) {
             
             //MARK: Axis Instance Picker
-            if instanceSelection != nil {
-                AxisInstancePicker(axis: axis, 
-                                   instanceSelection: instanceSelection!)
-                                   //styleSelection: $styleSelection)
-            }
+//            if instanceSelection != nil {
+//                AxisInstancePicker(axis: axis, 
+//                                   instanceSelection: instanceSelection!)
+//                                   //styleSelection: $styleSelection)
+//            }
             
             //MARK: Axis Instance
             VStack {
@@ -100,7 +101,9 @@ where Axis: StyledAxisProtocol,
 #Preview {
     let axes = makeDemoAxes() as DesignSpace<DemoAxis>
     @State var axis = axes.axes[0]
-    @State var styleSelection : StyleInstance? = StyleInstance(position: [StyleCoordinate(axisId: axis.id, instanceId: axis.instances[0].id, position: 10)], space: axes)
+    @State var styleSelection : Style = Style(position: [StyleCoordinate(axisId: axis.id, 
+                                                                                          instanceId: axis.instances[0].id, 
+                                                                                          at: 10)], in: axes)
     @State var styles = axes.styles
     return AxisStyleInstacesView(axis: axis, 
                                  styleSelection: $styleSelection) 

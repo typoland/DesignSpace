@@ -115,7 +115,7 @@ extension Array where Element: StyledAxisProtocol,
     
     public typealias Axis = Element
     
-    public func genertateStyles(from space: DesignSpace<Axis>) -> [StyleInstance<Axis>]
+    public func genertateStyles(from space: DesignSpace<Axis>) -> [Style<Axis>]
     {
         guard !self.isEmpty else { return [] }
         guard self.count > 1 else {
@@ -123,24 +123,24 @@ extension Array where Element: StyledAxisProtocol,
             return self[0].instances.map { instance in 
                 let selection = StyleCoordinate(axisId: self[0].id, 
                                                       instanceId: instance.id, 
-                                                      position: instance.axisEdgesValues[0])
-               return  StyleInstance(position: [selection], space: space)
+                                                      at: instance.axisEdgesValues[0])
+               return  Style(position: [selection], in: space)
             }}
-            var result: [StyleInstance<Axis>]
+            var result: [Style<Axis>]
             let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
             
             result = normalizedAxes.internalInstances().map { internalAxisInstances in
             let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
-                let position = internalAxisInstances[axisNr].position.reversed(in: self[axisNr].bounds)
+                let position = internalAxisInstances[axisNr].at.reversed(in: self[axisNr].bounds)
                 
                 let instanceId = internalAxisInstances[axisNr].instanceId
                 
                 return StyleCoordinate(axisId: self[axisNr].id, 
                                          instanceId: instanceId, 
-                                         position: position)
+                                         at: position)
             }
-            return StyleInstance(position: externalCoords, space: space)
+            return Style(position: externalCoords, in: space)
         }
         
         return result
@@ -196,7 +196,7 @@ extension Array where Element: StyledAxisProtocol,
                 }
                 let virginPosition = StyleCoordinate(axisId: self[axisNr].id, 
                                                            instanceId: self[axisNr].instances[styleIndex].id, 
-                                                           position: Double.nan)
+                                                           at: Double.nan)
                 normalizedPosition.append(virginPosition)
             }
 
@@ -206,7 +206,7 @@ extension Array where Element: StyledAxisProtocol,
             
             normalizedPosition.enumerated().forEach {
                 index, position in
-                normalizedPosition[index].position = coordinatesArray[index].averageD
+                normalizedPosition[index].at = coordinatesArray[index].averageD
             }
     
             result.append(normalizedPosition)

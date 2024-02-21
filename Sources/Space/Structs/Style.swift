@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import HyperSpace
 
-public struct StyleInstance<Axis>: Identifiable, Hashable
+public struct Style<Axis>: Identifiable, Hashable
 where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
 {
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -17,73 +17,78 @@ where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
              && lhs.styleCoordinates == rhs.styleCoordinates        
     }
     
-    init(position: [StyleCoordinate], space: DesignSpace<Axis>) {
+    init(position: [StyleCoordinate], in designSpace: DesignSpace<Axis>) {
         self.styleCoordinates = position
-        self.space = space
+        self.designSpace = designSpace
     }
-    var space: DesignSpace<Axis>
+    
+    init (in designSpace: DesignSpace<Axis>) {
+        let coordinates =  designSpace.axes.map { axis in
+            StyleCoordinate(axisId: axis.id, at: axis.at)
+        }
+        self.styleCoordinates = coordinates
+        self.designSpace = designSpace
+    }
+    
+    var designSpace: DesignSpace<Axis>
+    
     public var styleCoordinates: [StyleCoordinate]
     
-    public var id: Int { space.axes.count == styleCoordinates.count 
-        ? hashValue
-        : 0}
+    public var id: Int { 
+        guard designSpace.axes.count == styleCoordinates.filter({$0.instanceId != nil}).count 
+        else { return 0 } 
+        return hashValue
+    }
     
     public func hash(into hasher: inout Hasher) {
-        styleCoordinates.forEach { pos in
-            hasher.combine(pos.id)
+        styleCoordinates.forEach { coordinate in
+            //if coordinate.instanceId != nil { 
+            hasher.combine(coordinate.id)
         }
     }
 }
 
 
-extension StyleInstance {
+extension Style {
+    
     func indexOf(axis: Axis) -> Int? {
         styleCoordinates.firstIndex(where: {$0.axisId == axis.id})
     }
+    
     mutating func add(axis: Axis)
     {
         if indexOf(axis: axis) == nil,
            let firstInstanceID = axis.instances.first?.id {
             styleCoordinates.append(StyleCoordinate(axisId: axis.id, 
                                                     instanceId: firstInstanceID, 
-                                                    position: axis.at))
+                                                    at: axis.at))
         }
     }
     
-     mutating func delete(axis: Axis)
-    {
-        if let index = indexOf(axis: axis) {
-            styleCoordinates.remove(at: index)
-        }
-    }
     
     /// Changes Style Instance, mainly for selection.
     /// In interface not all axes could be selected, so there is a need to remove axis from selection.
     /// And becuse Selection knows only ids of Axis and AxisInstance 
     /// - Parameters:
-    ///   - axis: axis to change
-    ///   - instance: change Axis Instance selection, remove from selection if `nil`
+    ///   - in: axis to change
+    ///   - to: change Axis Instance selection, remove from selection if `nil`
     ///   - styles: array of generated styles to search in. 
-    mutating func change(axis: Axis, 
-                         instance: AxisInstance?) { 
-                       //  styles: [StyleInstance<Axis>]) {
-        //print ("CHANGE", axis.name, instance?.name, space.styles.count)
-        
+    mutating func changeInstance(in axis: Axis,
+                                 to instance: AxisInstance?) 
+    { 
         guard let instance else {
-            removeFromSelection(axis: axis)
-            //print ("instance is nil"); 
+            removeInstance(from: axis)
             return
         }
         
-        guard self.styleCoordinates.count == space.axes.count else {
-            //print ("differntt axes count"); 
+        guard self.styleCoordinates.count == designSpace.axes.count else {
             return
         }
         
         //find all styles, which contains current selected axis and instance
         // Znajdź style, których koordynaty i instancje pozostałych axisów są identyczne z aktualnymi koordynatami
        
-        let axisStylesGroup = space.styles.filter { style in
+        let axisStylesGroup = designSpace.styles.filter { style in
             var ok = true
             let compareCoordinates = zip(style.styleCoordinates, styleCoordinates)
             compareCoordinates.forEach { (styleCoordinate, thisCoordinate) in
@@ -104,63 +109,62 @@ extension StyleInstance {
             return }
         
         self = newStyle
-        
-       
     }
     
     func selectedInstance(for axis: Axis) -> AxisInstance? {
-        if let coordinateIndex = styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
-            return  axis.instances.first(where: {$0.id == styleCoordinates[coordinateIndex].instanceId})
+        if let axisIndex = styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
+            return  axis.instances.first(where: {$0.id == styleCoordinates[axisIndex].instanceId})
         }
         return nil
     }
     
-     mutating func removeFromSelection(axis: Axis)
+     mutating func removeInstance(from axis: Axis)
     {
-        if let axisIndex = styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
-            styleCoordinates.remove(at: axisIndex)
+        if let axisIndex = indexOf(axis: axis) {
+            styleCoordinates[axisIndex].instanceId = nil
         }
     }
     
-    mutating func setInstanceId(axis: Axis, id: UUID) 
-    {
-        if let axisIndex = styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
-            styleCoordinates[axisIndex].instanceId = id
-        } 
-    }
+//    mutating func setInstanceId(axis: Axis, id: UUID) 
+//    {
+//        if let axisIndex = indexOf(axis: axis) {
+//            styleCoordinates[axisIndex].instanceId = id
+//        } 
+//    }
     
     func axisInstanceId(of axis: Axis) -> UUID? {
-        if let axisIndex = styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
+        if let axisIndex = indexOf(axis: axis) {
            return styleCoordinates[axisIndex].instanceId
         }
         return nil
     }
     
      mutating func addInstance(to axis: Axis) {
-        if let axisIndex = space.axes.firstIndex(of: axis) {
-            space.addInstance(to: axisIndex)
+        if let axisIndex = designSpace.axes.firstIndex(of: axis) {
+            designSpace.addInstance(to: axisIndex)
         }
     }
 }
 
 
-extension StyleInstance  {
+extension Style  {
     public var name : String {
-        styleCoordinates.reduce(into: "", {$0 = $0+"\($1.instanceId) "})
+        designSpace.name(of: self)
     } 
+    
     public var coordinatesRounded: [Int] {
-        styleCoordinates.map{Int($0.position)}
+        styleCoordinates.map{Int($0.at)}
     }
 }
 
 
-extension StyleInstance: CustomStringConvertible {
+extension Style: CustomStringConvertible {
     public var description: String {
         return "\"\(name)\": \(coordinatesRounded)"
     }
 }
 
-extension StyleInstance {
+extension Style {
     public static func < (lhs: Self, rhs: Self) -> Bool {
         return lhs.name < rhs.name && //lhs.coordinates < rhs.coordinates
         zip(lhs.coordinatesRounded,rhs.coordinatesRounded).reduce(into: true) {r, z in
