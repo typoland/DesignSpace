@@ -91,6 +91,13 @@ where Axis: StyledAxisProtocol,
                 }) ?? Style(in: designSpace)
                 //updateStyles()
             }
+            .onChange(of: selectedStyle) {old, new in 
+                for coordinate in selectedStyle.styleCoordinates {
+                    if let axisIndex = designSpace.axes.firstIndex(where: {$0.id == coordinate.axisId}) {
+                        designSpace.axes[axisIndex].at = coordinate.at
+                    }
+                }
+            }
             #if DEBUG
             Text("SELECTED STYLE:\n\(selectedStyle.description)")
             #endif

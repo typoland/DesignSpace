@@ -35,7 +35,7 @@ where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
     public var styleCoordinates: [StyleCoordinate]
     
     public var id: Int { 
-        guard designSpace.axes.count == styleCoordinates.filter({$0.instanceId != nil}).count 
+        guard isSpaceStyle 
         else { return 0 } 
         return hashValue
     }
@@ -143,6 +143,10 @@ extension Style {
         if let axisIndex = designSpace.axes.firstIndex(of: axis) {
             designSpace.addInstance(to: axisIndex)
         }
+    }
+    
+    var isSpaceStyle: Bool {
+        styleCoordinates.filter({$0.instanceId != nil}).count == designSpace.axes.count
     }
 }
 

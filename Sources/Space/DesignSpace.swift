@@ -174,7 +174,7 @@ public extension DesignSpace {
 public extension DesignSpace {
     func name(of style: Style<Axis>) -> String {
         var r = ""
-        if axes.count == style.styleCoordinates.filter({$0.instanceId != nil}).count {
+        if style.isSpaceStyle {
             for positionOnAxis in style.styleCoordinates {
                 if let axis = self[positionOnAxis.axisId],
                    let instance = positionOnAxis.instanceId,
@@ -182,7 +182,6 @@ public extension DesignSpace {
                     r += instance.name + " "
                 }
             } 
-            
         } else {
             for styleCoordinate in style.styleCoordinates {
                 if let axis = axes.first(where: {$0.id == styleCoordinate.axisId}) {

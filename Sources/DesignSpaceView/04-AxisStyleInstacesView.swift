@@ -17,6 +17,7 @@ where Axis: StyledAxisProtocol,
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: Style<Axis>
+    //var openDetails: Bool
     
     var instanceSelection : Binding<AxisInstance>? {
         guard let instance = styleSelection.selectedInstance(for: axis) else {return nil}
@@ -40,11 +41,11 @@ where Axis: StyledAxisProtocol,
         HStack (alignment: .top) {
             
             //MARK: Axis Instance Picker
-//            if instanceSelection != nil {
-//                AxisInstancePicker(axis: axis, 
-//                                   instanceSelection: instanceSelection!)
-//                                   //styleSelection: $styleSelection)
-//            }
+            if instanceSelection != nil {
+                AxisInstancePicker(axis: axis, 
+                                   instanceSelection: instanceSelection!)
+                                   //styleSelection: $styleSelection)
+            }
             
             //MARK: Axis Instance
             VStack {
@@ -105,8 +106,10 @@ where Axis: StyledAxisProtocol,
                                                                                           instanceId: axis.instances[0].id, 
                                                                                           at: 10)], in: axes)
     @State var styles = axes.styles
+    var openDetails = true
     return AxisStyleInstacesView(axis: axis, 
-                                 styleSelection: $styleSelection) 
+                                 styleSelection: $styleSelection)
+   // openDetails: openDetails) 
                                 // styles: $styles)
     //    
     .environment(axes)

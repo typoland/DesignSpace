@@ -15,17 +15,20 @@ where Axis: StyledAxisProtocol,
 {
     @Bindable var axis: Axis
     @Binding var styleSelection: Style<Axis>
+    @State var detailsViewOpen: Bool = true
     //@Binding var styles: [StyleInstance<Axis>]
     
     var body: some View {
         VStack {
             GroupBox {
                 AxisPropertiesView(axis: axis, 
-                                   styleSelection: $styleSelection)
+                                   styleSelection: $styleSelection,
+                                   openDetails: $detailsViewOpen)
                                  //  styles: $styles)
-                AxisStyleInstacesView(axis: axis, 
-                                      styleSelection: $styleSelection)
-                                     // styles: $styles) 
+                if detailsViewOpen {
+                    AxisStyleInstacesView(axis: axis, 
+                                          styleSelection: $styleSelection)
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ where Axis: StyledAxisProtocol,
     
     @Bindable var axis: Axis
     @Binding var styleSelection: Style<Axis>
-    
+    @Binding var openDetails: Bool
     @Environment(DesignSpace<Axis>.self) private var designSpace
     
     var position: Binding<Double> {
@@ -47,7 +47,6 @@ where Axis: StyledAxisProtocol,
                 if !isSliding {
                     styleSelection.changeInstance(in: axis,
                                                   to: nil)
-                    print (styleSelection)
                 }
             }
             TextField("",
@@ -66,8 +65,12 @@ where Axis: StyledAxisProtocol,
                 }
             },
                    label: {
-                Text("Add Style to \(axis.name)")
+                Image(systemName: "rectangle.stack.badge.plus")
+                //Text("Add Style to \(axis.name)")
             })
+            Button(action: {openDetails.toggle()}, label: {
+                Image(systemName: "slider.horizontal.3")
+            }).disabled(!styleSelection.isSpaceStyle)
             
             Button(action: {
                 styleSelection.removeInstance(from: axis)
@@ -81,7 +84,7 @@ where Axis: StyledAxisProtocol,
             }) {
                 Image(systemName: "trash")
             }
-        }
+        }.buttonStyle(.borderless)
     }
 }
 
@@ -90,7 +93,9 @@ where Axis: StyledAxisProtocol,
     let axis = DEMO_SPACE.axes[0]
     @State var styles = DEMO_SPACE.styles
     @State var styleSelection = styles[0]
+    @State var openDetails = true
     return AxisPropertiesView(axis: axis,
-                              styleSelection: $styleSelection)
+                              styleSelection: $styleSelection,
+    openDetails: $openDetails)
         .environment(DEMO_SPACE)
 }
