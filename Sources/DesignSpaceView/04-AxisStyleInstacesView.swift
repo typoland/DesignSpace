@@ -16,17 +16,20 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
     @Bindable var axis: Axis
-    @Binding var styleSelection: Style<Axis>
-    //var openDetails: Bool
+    @Binding var environmentStyle: Style<Axis>
+
+    @Environment(DesignSpace<Axis>.self) private var designSpace
+    
     
     var instanceSelection : Binding<AxisInstance>? {
-        guard let instance = styleSelection.selectedInstance(for: axis) else {return nil}
+        guard let instance = environmentStyle.selectedInstance(for: axis) else {return nil}
         return Binding<AxisInstance>(
             get: {
                 instance
             }, 
             set: { newInstance in
-                styleSelection.changeInstance(in: axis,
+                var style = environmentStyle
+                style.changeInstance(in: axis,
                                               to: newInstance)
             })
     }
@@ -62,7 +65,7 @@ where Axis: StyledAxisProtocol,
                                 axis.instances.remove(at: instanceIndex)
                                 //instanceSelection = nil
                             }
-                        }, label: {Image(systemName: "trash")}
+                        }, label: {Image(systemName: "minus.square")}
                         )
                     }
                     EdgeValuesView(axis: axis,
@@ -102,13 +105,14 @@ where Axis: StyledAxisProtocol,
 #Preview {
     let axes = makeDemoAxes() as DesignSpace<DemoAxis>
     @State var axis = axes.axes[0]
-    @State var styleSelection : Style = Style(position: [StyleCoordinate(axisId: axis.id, 
-                                                                                          instanceId: axis.instances[0].id, 
-                                                                                          at: 10)], in: axes)
+    @State var environmentStyle : Style = Style(position: [StyleCoordinate(axisId: axis.id, 
+                                                                           instanceId: axis.instances[0].id, 
+                                                                           at: 10)], 
+                                                in: axes, id: 0)
     @State var styles = axes.styles
     var openDetails = true
-    return AxisStyleInstacesView(axis: axis, 
-                                 styleSelection: $styleSelection)
+    AxisStyleInstacesView(axis: axis, 
+                                 environmentStyle: $environmentStyle)
    // openDetails: openDetails) 
                                 // styles: $styles)
     //    

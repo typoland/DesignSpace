@@ -118,18 +118,19 @@ extension Array where Element: StyledAxisProtocol,
     public func genertateStyles(from space: DesignSpace<Axis>) -> [Style<Axis>]
     {
         guard !self.isEmpty else { return [] }
+        
         guard self.count > 1 else {
             //TODO: Check this, should return styles of one-dimensional space
-            return self[0].instances.map { instance in 
+            return self[0].instances.enumerated().map { (index, instance) in 
                 let selection = StyleCoordinate(axisId: self[0].id, 
-                                                      instanceId: instance.id, 
-                                                      at: instance.axisEdgesValues[0])
-               return  Style(position: [selection], in: space)
+                                                instanceId: instance.id, 
+                                                at: instance.axisEdgesValues[0])
+                return  Style(position: [selection], in: space, id: index)
             }}
-            var result: [Style<Axis>]
-            let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
-            
-            result = normalizedAxes.internalInstances().map { internalAxisInstances in
+        var result: [Style<Axis>]
+        let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed
+        
+        result = normalizedAxes.internalInstances().enumerated().map { (index, internalAxisInstances) in
             let externalCoords = (0..<internalAxisInstances.count).map { axisNr in
                 
                 let position = internalAxisInstances[axisNr].at.reversed(in: self[axisNr].bounds)
@@ -137,16 +138,16 @@ extension Array where Element: StyledAxisProtocol,
                 let instanceId = internalAxisInstances[axisNr].instanceId
                 
                 return StyleCoordinate(axisId: self[axisNr].id, 
-                                         instanceId: instanceId, 
-                                         at: position)
+                                       instanceId: instanceId, 
+                                       at: position)
             }
-            return Style(position: externalCoords, in: space)
+            return Style(position: externalCoords, in: space, id: index)
         }
         
         return result
     }
     
-    //Internal means normalized !
+    // Internal means normalized !
     func internalInstances() -> [[StyleCoordinate]] {
         
         func styleValueIndex(edge: SpaceEdge) -> Int {

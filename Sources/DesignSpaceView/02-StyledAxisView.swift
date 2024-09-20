@@ -8,13 +8,15 @@
 import SwiftUI
 import HyperSpace
 
+
+
 struct StyledAxisView<Axis>: View 
 where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 
 {
     @Bindable var axis: Axis
-    @Binding var styleSelection: Style<Axis>
+    @Binding var environmentStyle: Style<Axis>
     @State var detailsViewOpen: Bool = true
     //@Binding var styles: [StyleInstance<Axis>]
     
@@ -22,12 +24,11 @@ where Axis: StyledAxisProtocol,
         VStack {
             GroupBox {
                 AxisPropertiesView(axis: axis, 
-                                   styleSelection: $styleSelection,
+                                   environmentStyle: $environmentStyle,
                                    openDetails: $detailsViewOpen)
-                                 //  styles: $styles)
                 if detailsViewOpen {
                     AxisStyleInstacesView(axis: axis, 
-                                          styleSelection: $styleSelection)
+                                          environmentStyle: $environmentStyle)
                 }
             }
         }
@@ -39,8 +40,7 @@ where Axis: StyledAxisProtocol,
     @State var styles = space.styles
     @State var  styleSelection: Style = styles[0]
     let axis = space.axes[0]
-    return StyledAxisView(axis: axis, 
-                          styleSelection: $styleSelection)
-                    //      styles: $styles)
+    StyledAxisView(axis: axis, 
+                   environmentStyle: $styleSelection)
         .environment(space)
 }

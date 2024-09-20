@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HyperSpace
 /// `StyleCoordinate`  has defined IDs of `axis` and `axisInstance` and value for this coordinate
 public struct StyleCoordinate: Hashable, Identifiable
 
@@ -19,7 +20,7 @@ public struct StyleCoordinate: Hashable, Identifiable
     public func hash(into hasher: inout Hasher) {
         hasher.combine(axisId)
         hasher.combine(instanceId)
-        //don't hash position
+        //don't hash `at` position
     }
 }
 

@@ -107,6 +107,8 @@ public extension Array where Element: StyledAxisProtocol,
         self[axisIndex] = self[axisIndex] // STUPID ACTION TO TRIGGER VIEW
         distribute()
     }
+    
+    
 }
 
 extension PositionOnAxis

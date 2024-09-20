@@ -67,7 +67,7 @@ where Axis: StyledAxisProtocol
     @discardableResult
     public func addInstance(name: String = "Normal", 
                              to axis: Axis,
-                            at position: Double? = nil) throws -> Axis.Instance.ID? 
+                             at position: Double? = nil) throws -> Axis.Instance.ID? 
     {
         if let index = axes.firstIndex(of: axis) {
             return axes.addInstance(name: name, 
@@ -75,6 +75,17 @@ where Axis: StyledAxisProtocol
                                     at: position).id
         } 
         throw SpaceErrors.axisDoesNotExistInSpace(axisName: axis.name)
+    }
+    
+    var coordinates: [Double] {
+        get {axes.map({$0.at})}
+        set {(0..<newValue.count).forEach({axes[$0].at=newValue[$0]})}
+    }
+    
+    func environmentStyle(styleID: Int) -> Style<Axis> {
+        ( 0..<styles.count).contains(styleID) 
+        ? styles[styleID] 
+        : Style(in: self)
     }
 }
 
@@ -134,16 +145,6 @@ public extension DesignSpace {
 } 
 
 public extension DesignSpace {
-    
-    var positions: [Double] {
-        get {axes.map{$0.at}}
-        set {
-            for index in 0..<newValue.count {
-                axes[index].at = newValue[index]
-            }
-        }
-    }
-    
     func setPositions(by styleInstance: Style<Axis>) {
         styleInstance.coordinatesRounded.enumerated()
             .forEach({axes[$0].at = Double($1)})
@@ -189,6 +190,7 @@ public extension DesignSpace {
                 }
             }
         }
+        r = "\(style.id) \(r)"
         return r.split(separator: " ").joined(separator: " ")
     }
 } 

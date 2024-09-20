@@ -17,9 +17,12 @@ where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
              && lhs.styleCoordinates == rhs.styleCoordinates        
     }
     
-    init(position: [StyleCoordinate], in designSpace: DesignSpace<Axis>) {
+    
+    
+    init(position: [StyleCoordinate], in designSpace: DesignSpace<Axis>, id: Int) {
         self.styleCoordinates = position
         self.designSpace = designSpace
+        self.id = id
     }
     
     init (in designSpace: DesignSpace<Axis>) {
@@ -28,23 +31,17 @@ where Axis: StyledAxisProtocol, Axis: HasPositionProtocol
         }
         self.styleCoordinates = coordinates
         self.designSpace = designSpace
+        self.id = -1
     }
     
     var designSpace: DesignSpace<Axis>
     
     public var styleCoordinates: [StyleCoordinate]
     
-    public var id: Int { 
-        guard isSpaceStyle 
-        else { return 0 } 
-        return hashValue
-    }
+    public var id: Int 
     
     public func hash(into hasher: inout Hasher) {
-        styleCoordinates.forEach { coordinate in
-            //if coordinate.instanceId != nil { 
-            hasher.combine(coordinate.id)
-        }
+        hasher.combine(id)
     }
 }
 
@@ -78,6 +75,7 @@ extension Style {
     { 
         guard let instance else {
             removeInstance(from: axis)
+            id = -1
             return
         }
         
@@ -159,6 +157,13 @@ extension Style  {
     public var coordinatesRounded: [Int] {
         styleCoordinates.map{Int($0.at)}
     }
+    
+    public var coordinates: [Double] {
+        get {styleCoordinates.map{$0.at}}
+        set {
+            (0..<newValue.count).forEach({styleCoordinates[$0].at = newValue[$0]})
+        }
+    }
 }
 
 
@@ -170,9 +175,9 @@ extension Style: CustomStringConvertible {
 
 extension Style {
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.name < rhs.name && //lhs.coordinates < rhs.coordinates
-        zip(lhs.coordinatesRounded,rhs.coordinatesRounded).reduce(into: true) {r, z in
-            r = r && z.0 < z.1
-        }
+        return lhs.name < rhs.name //&& //lhs.coordinates < rhs.coordinates
+//        zip(lhs.coordinatesRounded, rhs.coordinatesRounded).reduce(into: true) {r, z in
+//            r = r && z.0 < z.1
+//        }
     }
 }

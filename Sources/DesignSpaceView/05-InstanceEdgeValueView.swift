@@ -55,7 +55,7 @@ where Axis: StyledAxisProtocol,
     let style =  Style(position: [
         StyleCoordinate(axisId: axis.id, 
                         instanceId: instance.id, 
-                        at: 10)], in: space)
+                        at: 10)], in: space, id: 1)
     @State var styleSelection : Style<DemoAxis>? = style
     @State var styles = space.styles
     return EdgeValuesView(axis: axis,

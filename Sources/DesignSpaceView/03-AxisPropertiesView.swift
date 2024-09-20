@@ -14,20 +14,56 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol,
       Axis: Observable
 {
-    
-    @Bindable var axis: Axis
-    @Binding var styleSelection: Style<Axis>
-    @Binding var openDetails: Bool
     @Environment(DesignSpace<Axis>.self) private var designSpace
+    @Bindable var axis: Axis
+    @Binding var environmentStyle: Style<Axis>
+    @Binding var openDetails: Bool
     
-    var position: Binding<Double> {
-        Binding<Double>(get: {axis.at}, 
-                        set: {axis.position = PositionOnAxis(axis: axis, at: $0)})
+
+    var instanceSelection : Binding<AxisInstance>? {
+        guard let instance = environmentStyle.selectedInstance(for: axis) else {return nil}
+        return Binding<AxisInstance>(
+            get: {
+                instance
+            }, 
+            set: { newInstance in
+              
+                environmentStyle.changeInstance(in: axis,
+                                                to: newInstance)
+            })
     }
     
     
+    var position: Binding<Double> {
+        Binding<Double>(get: {environmentStyle.id == -1 ? axis.at : environmentStyle.styleCoordinates[axisIndex].at}, 
+                        set: {
+            axis.position = PositionOnAxis(axis: axis, at: $0)
+            
+        })
+    }
+    
+    var axisIndex: Int {
+       designSpace.axes.firstIndex(of: axis)!
+    }
+    
+    
+    func removeInstance(from: Axis) {
+        environmentStyle.removeInstance(from: axis)
+    }
+    
+    func addInstance(to: Axis) {
+        do {
+            if let newInstanceID = try designSpace.addInstance(to: axis),
+               let index = environmentStyle.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
+                environmentStyle.styleCoordinates[index].instanceId = newInstanceID
+            }
+        } catch {
+            print (error)
+        }
+    }
     
     var body: some View {
+        
         HStack {
            Text("Axis:")
                 .frame(width: 60)
@@ -41,50 +77,62 @@ where Axis: StyledAxisProtocol,
                       value: $axis.lowerBound, 
                       format: .number)
             .frame(width: 45)
-            Slider(value: position,
-                   in: axis.bounds) 
-            { isSliding in
-                if !isSliding {
-                    styleSelection.changeInstance(in: axis,
-                                                  to: nil)
-                }
+            //if let style = environmentStyle {
+            Slider(value: position, in: axis.bounds) {on in
+                if on {environmentStyle = Style(in: designSpace)}
             }
-            TextField("",
-                      value: position, 
-                      format: .number)
-            .frame(width: 45)
+           
+            if instanceSelection != nil {
+                HStack {
+                    
+                    AxisInstancePicker(axis: axis, 
+                                       instanceSelection: instanceSelection!)
+                    //styleSelection: $styleSelection)
+                    Button(action: {openDetails.toggle()}, label: {
+                        Image(systemName: "slider.horizontal.3")
+                    }).disabled(!(environmentStyle.isSpaceStyle ?? false))
+                    
+                    Button(action: {
+                        removeInstance(from: axis)
+                        designSpace.delete(axis: axis)
+                        if designSpace.styles.isEmpty {
+                            let coordinates =  designSpace.axes.map { axis in
+                                StyleCoordinate(axisId: axis.id, at: axis.at)
+                            }
+                            environmentStyle = Style(in: designSpace)
+                        }
+                    }) {
+                        Image(systemName: "trash")
+                    }
+                }                    
+                .frame(width: 80)
+
+            } else {
+                HStack {
+                    TextField("",
+                              value: position, 
+                              format: .number)
+                   
+                }.frame(width: 80)
+            }
+            
             
             Button(action: {
-                do {
-                    if let newInstanceID = try designSpace.addInstance(to: axis),
-                       let index = styleSelection.styleCoordinates.firstIndex(where: {$0.axisId == axis.id}) {
-                        styleSelection.styleCoordinates[index].instanceId = newInstanceID
-                    }
-                } catch {
-                    print (error)
-                }
+                addInstance(to: axis)
             },
                    label: {
-                Image(systemName: "rectangle.stack.badge.plus")
+                Image(systemName: "plus.square")
                 //Text("Add Style to \(axis.name)")
             })
-            Button(action: {openDetails.toggle()}, label: {
-                Image(systemName: "slider.horizontal.3")
-            }).disabled(!styleSelection.isSpaceStyle)
+           
             
-            Button(action: {
-                styleSelection.removeInstance(from: axis)
-                designSpace.delete(axis: axis)
-                if designSpace.styles.isEmpty {
-                    let coordinates =  designSpace.axes.map { axis in
-                        StyleCoordinate(axisId: axis.id, at: axis.at)
-                    }
-                    styleSelection = Style(in: designSpace)
-                }
-            }) {
-                Image(systemName: "trash")
-            }
-        }.buttonStyle(.borderless)
+            
+        }
+        .buttonStyle(.borderless)
+        .onChange(of: environmentStyle.styleCoordinates[axisIndex].at) {old, new in 
+            print (old, new) 
+        }
+            
     }
 }
 
@@ -92,10 +140,10 @@ where Axis: StyledAxisProtocol,
     let DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     let axis = DEMO_SPACE.axes[0]
     @State var styles = DEMO_SPACE.styles
-    @State var styleSelection = styles[0]
+    @State var environmentStyle = styles[0]
     @State var openDetails = true
-    return AxisPropertiesView(axis: axis,
-                              styleSelection: $styleSelection,
+    AxisPropertiesView(axis: axis,
+                       environmentStyle: $environmentStyle,
     openDetails: $openDetails)
         .environment(DEMO_SPACE)
 }
