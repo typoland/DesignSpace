@@ -42,14 +42,6 @@ where Axis: StyledAxisProtocol,
     
     var body: some View {
         HStack (alignment: .top) {
-            
-            //MARK: Axis Instance Picker
-            if instanceSelection != nil {
-                AxisInstancePicker(axis: axis, 
-                                   instanceSelection: instanceSelection!)
-                                   //styleSelection: $styleSelection)
-            }
-            
             //MARK: Axis Instance
             VStack {
                 if let instanceIndex {
@@ -63,43 +55,20 @@ where Axis: StyledAxisProtocol,
                                 $0 == instanceSelection?.wrappedValue
                             }) {
                                 axis.instances.remove(at: instanceIndex)
-                                //instanceSelection = nil
                             }
-                        }, label: {Image(systemName: "minus.square")}
+                        }, label: {Image(systemName: "trash")}
                         )
                     }
                     EdgeValuesView(axis: axis,
-                                   instance: $axis.instances[instanceIndex])
-                                  // styles: $styles)
-                    
+                                   instance: $axis.instances[instanceIndex])                    
                 }
                 Spacer()
                 
             }
-//            .onChange(of: axis.instances) {
-//                print ("🔴 axis instances")
-//                //                selectInstanceSelection()
-//            }
-            
-//            .onChange(of: styleSelection) {
-//                print ("🟠 selection")
-//                //                selectInstanceSelection()
-//            }
-            
-//            .onAppear {
-//                print ("🟢 appear")
-//                selectInstanceSelection()
-//            }
             Spacer()
         }
         
     }
-
-    
-//    func selectInstanceSelection() {
-//        print (#function, Date.now)
-//        instanceSelection = styleSelection?.selectedInstance(for: axis)
-//    }
 }
 
 #Preview {

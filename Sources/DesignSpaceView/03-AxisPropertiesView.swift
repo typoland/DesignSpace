@@ -45,9 +45,10 @@ where Axis: StyledAxisProtocol,
     var axisIndex: Int {
        designSpace.axes.firstIndex(of: axis)!
     }
-    
-    
+
     func removeInstance(from: Axis) {
+        // TODO: CALL DESIGNSPACE STYLES CACHE
+        designSpace.clearStylesCache()
         environmentStyle.removeInstance(from: axis)
     }
     
@@ -73,21 +74,25 @@ where Axis: StyledAxisProtocol,
             TextField("", text: $axis.shortName)
                 .frame(width: 40)
             
-            TextField("",
-                      value: $axis.lowerBound, 
-                      format: .number)
-            .frame(width: 45)
+            TextField("", value: $axis.lowerBound, format: .number)
+                .frame(width: 45)
+            
+            TextField("", value: $axis.upperBound, format: .number)
+                .frame(width: 45)
+            
             //if let style = environmentStyle {
-            Slider(value: position, in: axis.bounds) {on in
-                if on {environmentStyle = Style(in: designSpace)}
-            }
+            Slider(value: position, in: axis.bounds) 
+//            {on in
+//                if on {environmentStyle = Style(in: designSpace)}
+//            }
+            .disabled(environmentStyle.id != -1)
            
             if instanceSelection != nil {
                 HStack {
                     
                     AxisInstancePicker(axis: axis, 
                                        instanceSelection: instanceSelection!)
-                    //styleSelection: $styleSelection)
+
                     Button(action: {openDetails.toggle()}, label: {
                         Image(systemName: "slider.horizontal.3")
                     }).disabled(!(environmentStyle.isSpaceStyle ?? false))
@@ -111,8 +116,8 @@ where Axis: StyledAxisProtocol,
                 HStack {
                     TextField("",
                               value: position, 
-                              format: .number)
-                   
+                              format: .number.precision(.fractionLength(0...0))
+                    )
                 }.frame(width: 80)
             }
             
@@ -124,15 +129,8 @@ where Axis: StyledAxisProtocol,
                 Image(systemName: "plus.square")
                 //Text("Add Style to \(axis.name)")
             })
-           
-            
-            
         }
         .buttonStyle(.borderless)
-        .onChange(of: environmentStyle.styleCoordinates[axisIndex].at) {old, new in 
-            print (old, new) 
-        }
-            
     }
 }
 

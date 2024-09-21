@@ -117,6 +117,7 @@ extension Array where Element: StyledAxisProtocol,
     
     public func genertateStyles(from space: DesignSpace<Axis>) -> [Style<Axis>]
     {
+        print ("GENERATING STYLES")
         guard !self.isEmpty else { return [] }
         
         guard self.count > 1 else {
@@ -125,7 +126,7 @@ extension Array where Element: StyledAxisProtocol,
                 let selection = StyleCoordinate(axisId: self[0].id, 
                                                 instanceId: instance.id, 
                                                 at: instance.axisEdgesValues[0])
-                return  Style(position: [selection], in: space, id: index)
+                return Style(position: [selection], in: space, id: index)
             }}
         var result: [Style<Axis>]
         let normalizedAxes = self.map { $0.normalizedCalculatorValues } // .distributed

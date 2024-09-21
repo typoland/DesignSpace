@@ -15,12 +15,14 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
     //@Environment(DesignSpace<Axis>.self) var designSpace
-    
+    enum ViewStyleMode: String, CaseIterable {
+        case environment
+        case style
+    }
     
     
     @State private var spaceStyleIndex: Int = -1
-    @State private var snapToStyle: Bool = false
-    //@State private var selectedStyle: Style<Axis>
+    @State private var mode: ViewStyleMode = .style
     
     
     
@@ -53,29 +55,42 @@ where Axis: StyledAxisProtocol,
                 designSpace.environmentStyle(styleID: spaceStyleIndex)
             },
             set: {new in
-                print (new.id)
                 spaceStyleIndex = new.id
+                designSpace.setPositions(by: currentStyle.wrappedValue)
             })
     }
     
     public var body: some View {
         VStack  {
             HStack {
-                Picker("Styles", selection: $spaceStyleIndex) { 
-                    
-                    if spaceStyleIndex == -1 {
-                        Text ("environment \(designSpace.name(of: currentStyle.wrappedValue))")
-                            .tag(-1)
+                Picker("", selection: $mode) {
+                    ForEach(ViewStyleMode.allCases, id:\.self) {mode in
+                        Text("\(mode)")
+                            .tag(mode)
                     }
-                    
-                    
-                    ForEach(styles) { style in 
-                        Text("\(designSpace.name(of: style)) - \(style.coordinatesRounded.description)")
-                            .tag(style.id)
+                }.frame(width: 140)
+                
+                Spacer()
+                
+                if mode == .style {
+                    Picker("\(styles.count) Styles", selection: $spaceStyleIndex) { 
+                        
+                        if spaceStyleIndex == -1 {
+                            Text ("\(designSpace.name(of: currentStyle.wrappedValue))")
+                                .tag(-1)
+                        }
+                        
+                        
+                        ForEach(styles) { style in 
+                            Text("\(designSpace.name(of: style))")
+                                .tag(style.id)
+                        }
                     }
+                } else {
+                    Text ("\(designSpace.name(of: currentStyle.wrappedValue))")
                 }
           
-                Toggle("snap", isOn: $snapToStyle)
+                Spacer(minLength: 100)
                 
                 Button("Add Axis") { 
                     let axis = designSpace.addAxis(name: "New", shortName: "nw")
@@ -99,19 +114,21 @@ where Axis: StyledAxisProtocol,
         .onAppear {
             spaceStyleIndex = styles.isEmpty ? -1 : 0
         }
-        
+        .onChange(of: mode) {
+            switch mode {
+            case .environment:
+                designSpace.setPositions(by: currentStyle.wrappedValue)
+                spaceStyleIndex = -1
+            case .style:
+                
+                currentStyle.wrappedValue = designSpace.closestStyle
+            }
+        }
         
         Spacer() // Push everything up / space at bottom
     }
   
-    func snapCoordsToStyle() {
-        for (index, axis) in designSpace.axes.enumerated() {
-            let current = axis.at
-            let closest = designSpace.styles.map {Double($0.coordinatesRounded[index])}
-                .closest(to: current)
-            designSpace.axes[index].position = PositionOnAxis(axis: designSpace.axes[index], at: closest)
-        }
-    }
+    
     
     
 }

@@ -31,10 +31,6 @@ where Axis: StyledAxisProtocol,
                             .frame(width: 100)
                         Slider(value: $instance.axisEdgesValues[index], 
                                in: axis.bounds) 
-//                    {_ in
-//                            print ("instance \(instance.name) changed")
-//                            space.styles
-//                        }
                                .controlSize(.mini)
                         Text ("\(instance.axisEdgesValues[index], specifier:"%0.0f")")
                             .frame(width: 60)

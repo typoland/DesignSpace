@@ -103,7 +103,6 @@ extension Style {
                 coordinate.axisId == axis.id && coordinate.instanceId == instance.id
             }) != nil
         }) else { 
-            //print ("no new style"); 
             return }
         
         self = newStyle

@@ -17,8 +17,7 @@ where Axis: StyledAxisProtocol,
 {
     @Bindable var axis: Axis
     @Binding var environmentStyle: Style<Axis>
-    @State var detailsViewOpen: Bool = true
-    //@Binding var styles: [StyleInstance<Axis>]
+    @State var detailsViewOpen: Bool = false
     
     var body: some View {
         VStack {

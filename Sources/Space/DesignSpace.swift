@@ -14,9 +14,35 @@ public final class DesignSpace<Axis>: SpaceProtocol, Codable
 where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
-    public  var axes: [Axis] 
+    
+
+    
+    public var axes: [Axis]
+//    private var instancesValuesChanged: Bool = true
+    private var stylesCache : [Style<Axis>]? = nil
+    
+    // MARK: - Codable
+    private enum CodingKeys: String, CodingKey {
+        case axes = "axes"
+    }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        axes = try container.decode([Axis].self, forKey: .axes)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(axes, forKey: .axes)
+    }
+    // MARK: - init
     required public init(_ axes: [Axis] = []) {
         self.axes = axes
+    }
+}
+
+extension DesignSpace {
+    public func clearStylesCache() {
+        stylesCache = nil
     }
 }
 
@@ -29,7 +55,10 @@ where Axis: StyledAxisProtocol
                         shortName:String, 
                         styleName: String = "Normal", 
                         at: Double? = nil) -> Axis {
-        axes.addAxis(name:name, 
+        
+        stylesCache = nil
+        
+        return axes.addAxis(name:name, 
                       shortName: shortName, 
                       styleName: styleName, 
                       at: at)
@@ -45,6 +74,7 @@ where Axis: StyledAxisProtocol
     }
     
     public func deleteAxis(at index: Int) {
+        stylesCache = nil
         axes.deleteAxis(at: index)
     }
     
@@ -59,7 +89,8 @@ where Axis: StyledAxisProtocol
                              to axisIndex: Array<Axis>.Index,
                              at position: Double? = nil) -> Axis.Instance 
     {
-        axes.addInstance(name: name, 
+        stylesCache = nil
+        return axes.addInstance(name: name, 
                          to: axisIndex, 
                          at: position)
     }
@@ -70,6 +101,7 @@ where Axis: StyledAxisProtocol
                              at position: Double? = nil) throws -> Axis.Instance.ID? 
     {
         if let index = axes.firstIndex(of: axis) {
+            stylesCache = nil
             return axes.addInstance(name: name, 
                                     to: index, 
                                     at: position).id
@@ -86,6 +118,29 @@ where Axis: StyledAxisProtocol
         ( 0..<styles.count).contains(styleID) 
         ? styles[styleID] 
         : Style(in: self)
+    }
+    
+    var closestStyle: Style<Axis> {
+        var smallestDiff: [(diff: Double, indexes: Set<Int>)] = Array(repeating: (Double.infinity, []) , 
+                                                  count: axes.count)
+        for (axisIndex, axis) in axes.enumerated() {
+            let axisAt = axes[axisIndex].at
+            
+            for (styleIndex, style) in styles.enumerated() {
+                let diff = abs(style.coordinates[axisIndex] - axisAt)
+                if smallestDiff[axisIndex].diff > diff {
+                    smallestDiff[axisIndex] = (diff: diff, indexes: [styleIndex])
+                } else if smallestDiff[axisIndex].diff == diff {
+                    smallestDiff[axisIndex].indexes.insert(styleIndex)
+                }
+            }
+        }
+        var set = smallestDiff[0].indexes
+        
+        for i in 1..<smallestDiff.count {
+            set = set.intersection(smallestDiff[i].indexes)
+        }
+        return environmentStyle(styleID: set.first ?? -1)
     }
 }
 
@@ -140,7 +195,11 @@ extension DesignSpace {
     
 public extension DesignSpace {
     var styles: [Style<Axis>] {
-        axes.genertateStyles(from: self)
+       
+        if stylesCache == nil {
+            stylesCache = axes.genertateStyles(from: self)
+        }
+        return stylesCache ?? []
     }
 } 
 
@@ -148,27 +207,7 @@ public extension DesignSpace {
     func setPositions(by styleInstance: Style<Axis>) {
         styleInstance.coordinatesRounded.enumerated()
             .forEach({axes[$0].at = Double($1)})
-    }
-}
-
-
-public extension DesignSpace {
-    func set(instance: AxisInstance, of axis: Axis) {
-        if let index = axis.instances.firstIndex(of: instance) {
-            axis.instances[index] = instance
-        }
-    }
-    
-    func set(edge edgeIndex:Int, of instance: AxisInstance, of axis: Axis, to value: Double) {
-        withObservationTracking({
-            if let instanceIndex = axis.instances.firstIndex(of: instance) {
-                axis.instances[instanceIndex]
-                    .axisEdgesValues[edgeIndex] = value
-            } 
-        }, onChange: {print ("wow")})
-        withMutation(keyPath: \.axes) {
-          _axes = axes  
-        }
+        stylesCache = nil
     }
 }
 
@@ -186,11 +225,11 @@ public extension DesignSpace {
         } else {
             for styleCoordinate in style.styleCoordinates {
                 if let axis = axes.first(where: {$0.id == styleCoordinate.axisId}) {
-                    r += "\(axis.name): \(axis.at.formatted(.number.precision(.fractionLength(0...1)))), "
+                    r += "\(axis.shortName): \(axis.at.formatted(.number.precision(.fractionLength(0...0)))), "
                 }
             }
         }
-        r = "\(style.id) \(r)"
+        //r = "\(style.id) \(r)"
         return r.split(separator: " ").joined(separator: " ")
     }
 } 
