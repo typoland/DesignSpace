@@ -117,7 +117,6 @@ extension Array where Element: StyledAxisProtocol,
     
     public func genertateStyles(from space: DesignSpace<Axis>) -> [Style<Axis>]
     {
-        print ("GENERATING STYLES")
         guard !self.isEmpty else { return [] }
         
         guard self.count > 1 else {

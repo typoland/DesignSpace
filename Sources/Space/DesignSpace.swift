@@ -79,6 +79,7 @@ where Axis: StyledAxisProtocol
     }
     
     public func delete(axis: Axis) {
+        stylesCache = nil
         if let index = axes.firstIndex(of: axis) {
             axes.deleteAxis(at: index)
         }
@@ -109,6 +110,12 @@ where Axis: StyledAxisProtocol
         throw SpaceErrors.axisDoesNotExistInSpace(axisName: axis.name)
     }
     
+    public func removeInstance(_ instance: Axis.Instance, from axis: Axis) {
+        if let axisIndex = axes.firstIndex(of: axis), 
+            let instanceIndex = axes[axisIndex].instances.firstIndex(of: instance) {
+            axes[axisIndex].instances.remove(at: instanceIndex)
+        }
+    }
     var coordinates: [Double] {
         get {axes.map({$0.at})}
         set {(0..<newValue.count).forEach({axes[$0].at=newValue[$0]})}

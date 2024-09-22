@@ -20,12 +20,14 @@ where Axis: StyledAxisProtocol,
     @State var detailsViewOpen: Bool = false
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             GroupBox {
                 AxisPropertiesView(axis: axis, 
                                    environmentStyle: $environmentStyle,
                                    openDetails: $detailsViewOpen)
+                
                 if detailsViewOpen {
+                    DetailsView(axis: axis)
                     AxisStyleInstacesView(axis: axis, 
                                           environmentStyle: $environmentStyle)
                 }

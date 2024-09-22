@@ -33,9 +33,7 @@ where Axis: StyledAxisProtocol,
                                               to: newInstance)
             })
     }
-    
-    @Environment(DesignSpace<Axis>.self) private var space
-    
+        
     var instanceIndex: Int? {
         axis.instances.firstIndex(where: {$0.id == instanceSelection?.wrappedValue.id})
     }

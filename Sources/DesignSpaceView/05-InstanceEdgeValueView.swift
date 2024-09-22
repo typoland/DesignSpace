@@ -36,7 +36,9 @@ where Axis: StyledAxisProtocol,
                             .frame(width: 60)
                     }
                 }.controlSize(.mini)
-                
+                .onChange(of: instance.axisEdgesValues) {
+                    space.clearStylesCache()
+                }
            
         }
     }

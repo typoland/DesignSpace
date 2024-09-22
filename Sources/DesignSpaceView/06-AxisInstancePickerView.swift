@@ -30,7 +30,9 @@ where Axis: StyledAxisProtocol,
     var body: some View {
         Picker("", selection: $instanceSelection) {
             ForEach($axis.instances.indices, id:\.self) { index in
-                Text("\(axis.instances[index].name)")
+                let name = axis.instances[index].name
+                Text("\(name.isEmpty ? "(omit name)" : name)")
+                    .fontDesign(.monospaced)
                     .tag(axis.instances[index] as AxisInstance)
             }
         }

@@ -43,11 +43,10 @@ where Axis: StyledAxisProtocol,
     }
     
     var axisIndex: Int {
-       designSpace.axes.firstIndex(of: axis)!
+       designSpace.axes.firstIndex(of: axis) ?? 0
     }
 
     func removeInstance(from: Axis) {
-        // TODO: CALL DESIGNSPACE STYLES CACHE
         designSpace.clearStylesCache()
         environmentStyle.removeInstance(from: axis)
     }
@@ -66,69 +65,51 @@ where Axis: StyledAxisProtocol,
     var body: some View {
         
         HStack {
-           Text("Axis:")
-                .frame(width: 60)
-            TextField("", text: $axis.name)
-                .frame(width: 100)
+            Button(action: {openDetails.toggle()}, label: {
+                Image(systemName: "slider.horizontal.3")
+            })//.disabled(!(environmentStyle.isSpaceStyle ?? false))
             
-            TextField("", text: $axis.shortName)
-                .frame(width: 40)
-            
-            TextField("", value: $axis.lowerBound, format: .number)
-                .frame(width: 45)
-            
-            TextField("", value: $axis.upperBound, format: .number)
-                .frame(width: 45)
-            
-            //if let style = environmentStyle {
-            Slider(value: position, in: axis.bounds) 
-//            {on in
-//                if on {environmentStyle = Style(in: designSpace)}
-//            }
-            .disabled(environmentStyle.id != -1)
+            Text("\(axis.name)")
            
+            //if let style = environmentStyle {
+           
+            Spacer()
+           // MARK: STYLES AVAILABLE
             if instanceSelection != nil {
-                HStack {
+                HStack(alignment: .top) {
                     
-                    AxisInstancePicker(axis: axis, 
-                                       instanceSelection: instanceSelection!)
-
-                    Button(action: {openDetails.toggle()}, label: {
-                        Image(systemName: "slider.horizontal.3")
-                    }).disabled(!(environmentStyle.isSpaceStyle ?? false))
-                    
-                    Button(action: {
-                        removeInstance(from: axis)
-                        designSpace.delete(axis: axis)
-                        if designSpace.styles.isEmpty {
-                            let coordinates =  designSpace.axes.map { axis in
-                                StyleCoordinate(axisId: axis.id, at: axis.at)
-                            }
-                            environmentStyle = Style(in: designSpace)
-                        }
-                    }) {
-                        Image(systemName: "trash")
+                  
+                        AxisInstancePicker(axis: axis, 
+                                           instanceSelection: instanceSelection!)
+                        .frame(minWidth: 100)
+                        
                     }
-                }                    
-                .frame(width: 80)
-
+                                  
+            // MARK: ENVIRONMENT   
             } else {
-                HStack {
-                    TextField("",
-                              value: position, 
-                              format: .number.precision(.fractionLength(0...0))
-                    )
-                }.frame(width: 80)
+                VStack(alignment: .leading) {
+                    HStack(alignment: .top) {
+                        Button(action: {
+                            addInstance(to: axis)
+                        },
+                               label: {
+                            Image(systemName: "plus.square.fill.on.square.fill")
+                            //Text("Add Style to \(axis.name)")
+                        }).help("add Style Instance")
+                        
+                        TextField("",
+                                  value: position, 
+                                  format: .number.precision(.fractionLength(0...0))
+                        )
+                    }
+                    if openDetails {
+                        
+                    }
+                }
+               
             }
-            
-            
-            Button(action: {
-                addInstance(to: axis)
-            },
-                   label: {
-                Image(systemName: "plus.square")
-                //Text("Add Style to \(axis.name)")
-            })
+            Slider(value: position, in: axis.bounds) 
+                .disabled(instanceSelection != nil)
         }
         .buttonStyle(.borderless)
     }
