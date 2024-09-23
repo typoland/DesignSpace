@@ -27,9 +27,9 @@ where Axis: StyledAxisProtocol,
                                    openDetails: $detailsViewOpen)
                 
                 if detailsViewOpen {
-                    DetailsView(axis: axis)
-                    AxisStyleInstacesView(axis: axis, 
-                                          environmentStyle: $environmentStyle)
+                    DetailsView(axis: axis, 
+                                environmentStyle: $environmentStyle)
+                   
                 }
             }
         }

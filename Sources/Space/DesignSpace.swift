@@ -73,6 +73,10 @@ where Axis: StyledAxisProtocol
         axes.insertAxis(at: index)
     }
     
+    public func axisIndex(of axis: Axis) -> Int? {
+        axes.firstIndex(of: axis)
+    } 
+    
     public func deleteAxis(at index: Int) {
         stylesCache = nil
         axes.deleteAxis(at: index)
@@ -132,7 +136,6 @@ where Axis: StyledAxisProtocol
                                                   count: axes.count)
         for (axisIndex, axis) in axes.enumerated() {
             let axisAt = axes[axisIndex].at
-            
             for (styleIndex, style) in styles.enumerated() {
                 let diff = abs(style.coordinates[axisIndex] - axisAt)
                 if smallestDiff[axisIndex].diff > diff {
@@ -141,6 +144,9 @@ where Axis: StyledAxisProtocol
                     smallestDiff[axisIndex].indexes.insert(styleIndex)
                 }
             }
+        }
+        if smallestDiff.isEmpty {
+            return Style(in: self)
         }
         var set = smallestDiff[0].indexes
         

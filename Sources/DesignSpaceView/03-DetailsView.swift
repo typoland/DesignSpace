@@ -6,18 +6,22 @@
 //
 import SwiftUI
 import HyperSpace
+import DesignSpace
 
 struct DetailsView<Axis>: View 
-where Axis: StyledAxisProtocol> {
+where Axis: StyledAxisProtocol,
+      Axis: HasPositionProtocol {
     @Bindable var axis:Axis
     @Binding var environmentStyle: Style<Axis>
-    @Environment(DesignSpace<Axis>.self) private var designSpace
+   
     
     var body: some View {
         if environmentStyle.id == -1 {
-            AxisDetailsView()
+            AxisDetailsView(axis: axis, 
+                            environmentStyle: $environmentStyle)
         } else {
-            AxisStyleInstacesView(axis: axis, instance)
+            AxisStyleInstacesView(axis: axis, 
+                                  environmentStyle: $environmentStyle)
         }
     }
 }

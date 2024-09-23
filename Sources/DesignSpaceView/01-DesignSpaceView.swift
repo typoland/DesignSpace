@@ -16,13 +16,13 @@ where Axis: StyledAxisProtocol,
 {
     //@Environment(DesignSpace<Axis>.self) var designSpace
     enum ViewStyleMode: String, CaseIterable {
-        case environment
-        case style
+        case axes
+        case styles
     }
     
     
     @State private var spaceStyleIndex: Int = -1
-    @State private var mode: ViewStyleMode = .style
+    @State private var mode: ViewStyleMode = .styles
     
     
     
@@ -65,14 +65,14 @@ where Axis: StyledAxisProtocol,
             HStack {
                 Picker("", selection: $mode) {
                     ForEach(ViewStyleMode.allCases, id:\.self) {mode in
-                        Text("\(mode)")
+                        Text("\(mode.rawValue.capitalized)")
                             .tag(mode)
                     }
                 }.frame(width: 140)
                 
                 Spacer()
                 
-                if mode == .style {
+                if mode == .styles {
                     Picker("\(styles.count) Styles", selection: $spaceStyleIndex) { 
                         
                         if spaceStyleIndex == -1 {
@@ -116,10 +116,10 @@ where Axis: StyledAxisProtocol,
         }
         .onChange(of: mode) {
             switch mode {
-            case .environment:
+            case .axes:
                 designSpace.setPositions(by: currentStyle.wrappedValue)
                 spaceStyleIndex = -1
-            case .style:
+            case .styles:
                 
                 currentStyle.wrappedValue = designSpace.closestStyle
             }
