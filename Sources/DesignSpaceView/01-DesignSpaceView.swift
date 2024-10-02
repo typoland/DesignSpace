@@ -24,27 +24,14 @@ where Axis: StyledAxisProtocol,
     @State private var spaceStyleIndex: Int = -1
     @State private var mode: ViewStyleMode = .styles
     
-    
-    
     var designSpace: DesignSpace<Axis>
-//    func updateStyles() {
-//        styles = designSpace.styles
-//    }
-    
+
     //Init must be here because it's in package
     public init(designSpace: DesignSpace<Axis>) {
         self.designSpace = designSpace
         //self.selectedStyle = Style(in: designSpace)
     }
     
-    //Delivers axes coordinates as string for Picker menu
-    private var currrentAxesPositionString : String {
-        var t = designSpace.axes.reduce (into: "", {s, axis in
-            s += "\(axis.name): \(axis.at.formatted(.number.rounded(increment: 1))) "
-        }) 
-        if !t.isEmpty { t.removeLast() }
-        return String(t)
-    }
     private var styles: [Style<Axis>] {
         designSpace.styles
     }    
@@ -120,11 +107,15 @@ where Axis: StyledAxisProtocol,
                 designSpace.setPositions(by: currentStyle.wrappedValue)
                 spaceStyleIndex = -1
             case .styles:
-                
                 currentStyle.wrappedValue = designSpace.closestStyle
             }
         }
-        
+        .onChange(of: spaceStyleIndex) {
+            designSpace.setPositions(by: currentStyle.wrappedValue)
+        }
+        .onChange(of: currentStyle.wrappedValue.description) {
+            designSpace.setPositions(by: currentStyle.wrappedValue)
+        }
         Spacer() // Push everything up / space at bottom
     }
   

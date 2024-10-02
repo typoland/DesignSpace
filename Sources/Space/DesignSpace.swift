@@ -120,9 +120,17 @@ where Axis: StyledAxisProtocol
             axes[axisIndex].instances.remove(at: instanceIndex)
         }
     }
-    var coordinates: [Double] {
+    public var coordinates: [Double] {
         get {axes.map({$0.at})}
         set {(0..<newValue.count).forEach({axes[$0].at=newValue[$0]})}
+    }
+    
+    public var namedCoordinatesString : String {
+        var t = axes.reduce (into: "", {s, axis in
+            s += "\(axis.name): \(axis.at.formatted(.number.rounded(increment: 1))) "
+        }) 
+        if !t.isEmpty { t.removeLast() }
+        return String(t)
     }
     
     func environmentStyle(styleID: Int) -> Style<Axis> {
@@ -158,7 +166,6 @@ where Axis: StyledAxisProtocol
 }
 
 extension DesignSpace { 
-    
     struct CornerCoordinate {
         
         enum Bound: CustomStringConvertible {
@@ -217,8 +224,8 @@ public extension DesignSpace {
 } 
 
 public extension DesignSpace {
-    func setPositions(by styleInstance: Style<Axis>) {
-        styleInstance.coordinatesRounded.enumerated()
+    func setPositions(by style: Style<Axis>) {
+        style.coordinatesRounded.enumerated()
             .forEach({axes[$0].at = Double($1)})
         stylesCache = nil
     }

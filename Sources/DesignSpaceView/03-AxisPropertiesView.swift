@@ -69,7 +69,7 @@ where Axis: StyledAxisProtocol,
                 Image(systemName: "slider.horizontal.3")
             })//.disabled(!(environmentStyle.isSpaceStyle ?? false))
             
-            Text("\(axis.name)")
+            Text("\(axis.name)").frame(width: 110)
            
             //if let style = environmentStyle {
            
@@ -81,7 +81,7 @@ where Axis: StyledAxisProtocol,
                   
                         AxisInstancePicker(axis: axis, 
                                            instanceSelection: instanceSelection!)
-                        .frame(minWidth: 100)
+                        .frame(width: 90)
                         
                     }
                                   
@@ -100,11 +100,11 @@ where Axis: StyledAxisProtocol,
                         TextField("",
                                   value: position, 
                                   format: .number.precision(.fractionLength(0...0))
-                        )
+                        ).frame(width: 40)
                     }
-                    if openDetails {
-                        
-                    }
+//                    if openDetails {
+//                        
+//                    }
                 }
                
             }
