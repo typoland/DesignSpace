@@ -1,5 +1,4 @@
-{
-    "weight" : {
+["weight", {
         "shortName" : "wt",
         "instances" : 
         [
@@ -14,7 +13,7 @@
             "Ultra"
         ],
     },
-    "width":  {
+    "width",  {
         "shortName" : "wd",
         "instances" : 
         [
@@ -26,19 +25,19 @@
             "Extended"
         ],
     },
-    "contrast":  {
+    "contrast", {
         "shortName" : "co",
         "instances" : 
         []
     },
-    "xHeight": {
+    "xHeight", {
         "shortName" : "xh",
         "instances" : 
         []
     },
-    "opticalSize":{
+    "opticalSize", {
         "shortName" :  "op",
         "instances" : 
         []
     }
-}
+]

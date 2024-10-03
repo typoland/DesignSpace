@@ -45,8 +45,12 @@ where Axis: StyledAxisProtocol,
                 if let instanceIndex {
                     HStack {
                         //MARK: Edit Instance Name
+                        Text ("Style name:")
                         TextField("", text: $axis.instances[instanceIndex].name)
-                        
+                        Toggle(isOn: $axis.instances[instanceIndex].linked, label: {Image(systemName: "link")})
+                            .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+                            .controlSize(.mini)
+                        Spacer(minLength: 40)
                         //MARK: Delete Instance
                         Button(action: {
                             if let instanceIndex = axis.instances.firstIndex(where: {
@@ -57,8 +61,10 @@ where Axis: StyledAxisProtocol,
                         }, label: {Image(systemName: "trash")}
                         )
                     }
-                    EdgeValuesView(axis: axis,
-                                   instance: $axis.instances[instanceIndex])                    
+                    if !axis.instances[instanceIndex].linked {
+                        EdgeValuesView(axis: axis,
+                                       instance: $axis.instances[instanceIndex])  
+                    }
                 }
                 Spacer()
                 

@@ -20,7 +20,8 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
       
         //.package(url: "https://github.com/typoland/HyperSpace", branch: "main"),
-        .package(path: "../HyperSpace")
+        .package(path: "../HyperSpace"),
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMinor(from: "1.1.0"))
         
     ],
     targets: [
@@ -28,13 +29,13 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "DesignSpace", 
-            dependencies: ["HyperSpace"],
+            dependencies: ["HyperSpace",
+                           .product(name: "Collections", package: "swift-collections")],
             resources: [.process("AxisNames.json")]
         ),
         .testTarget(
             name: "DesignSpaceTests",
             dependencies: ["DesignSpace"]
-            //resources: [.process("AxisNames.json")]
         ),
         
         

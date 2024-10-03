@@ -38,3 +38,14 @@ where Axis: StyledAxisProtocol,
         }
     }
 }
+
+#Preview {
+    let space = DesignSpace<DemoAxis>()
+    let axis = space.addAxis(name: "Test", 
+                             shortName: "ts", 
+                             styleName: "Normal", at: 500)
+    @State var instance = axis.instances[0]
+    AxisInstancePicker(axis: axis, 
+                              instanceSelection: $instance)
+    .environment(space)
+}

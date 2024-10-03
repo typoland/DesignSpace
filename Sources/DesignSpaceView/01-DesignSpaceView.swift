@@ -55,7 +55,7 @@ where Axis: StyledAxisProtocol,
                         Text("\(mode.rawValue.capitalized)")
                             .tag(mode)
                     }
-                }.frame(width: 140)
+                }.frame(width: 100)
                 
                 Spacer()
                 
@@ -108,6 +108,7 @@ where Axis: StyledAxisProtocol,
                 spaceStyleIndex = -1
             case .styles:
                 currentStyle.wrappedValue = designSpace.closestStyle
+                spaceStyleIndex = currentStyle.id
             }
         }
         .onChange(of: spaceStyleIndex) {
@@ -125,6 +126,6 @@ where Axis: StyledAxisProtocol,
 }
 
 #Preview {
-    let DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
+    var DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     return DesignSpaceView(designSpace: DEMO_SPACE)
 }

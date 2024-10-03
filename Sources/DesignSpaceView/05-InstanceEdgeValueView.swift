@@ -22,7 +22,7 @@ where Axis: StyledAxisProtocol,
     var body: some View {
         
         VStack {
-
+            
             ForEach($instance.axisEdgesValues.indices, id:\.self) {index in
                 HStack {
                     
@@ -37,6 +37,7 @@ where Axis: StyledAxisProtocol,
                     }
                 }.controlSize(.mini)
                 .onChange(of: instance.axisEdgesValues) {
+                   
                     space.clearStylesCache()
                 }
            

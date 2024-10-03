@@ -36,9 +36,19 @@ where Axis: StyledAxisProtocol,
     
     var position: Binding<Double> {
         Binding<Double>(get: {environmentStyle.id == -1 ? axis.at : environmentStyle.styleCoordinates[axisIndex].at}, 
-                        set: {
-            axis.position = PositionOnAxis(axis: axis, at: $0)
+                        set: { newPosition in
             
+            if instanceSelection?.wrappedValue.linked ?? false {
+                
+                let size = instanceSelection!.wrappedValue.axisEdgesValues.count 
+                var instance = instanceSelection!.wrappedValue
+                (0..<size).forEach{ instance.axisEdgesValues[$0] = newPosition}
+                if let index = axis.instances.firstIndex(of: instanceSelection!.wrappedValue) {
+                    axis.instances[index] = instance
+                }
+                designSpace.clearStylesCache()
+            } 
+            axis.position = PositionOnAxis(axis: axis, at: newPosition)
         })
     }
     
@@ -64,54 +74,54 @@ where Axis: StyledAxisProtocol,
     
     var body: some View {
         
-        HStack {
-            Button(action: {openDetails.toggle()}, label: {
-                Image(systemName: "slider.horizontal.3")
-            })//.disabled(!(environmentStyle.isSpaceStyle ?? false))
+        HStack (alignment: .firstTextBaseline) {
+            HStack {
+                Button(action: {openDetails.toggle()}, label: {
+                    Image(systemName: "slider.horizontal.3")
+                })//.disabled(!(environmentStyle.isSpaceStyle ?? false))
+                
+                Text("\(axis.name)")
+                Spacer()
+                //if let style = environmentStyle {
+            }.frame(width: 90)
             
-            Text("\(axis.name)").frame(width: 110)
-           
-            //if let style = environmentStyle {
-           
-            Spacer()
-           // MARK: STYLES AVAILABLE
-            if instanceSelection != nil {
-                HStack(alignment: .top) {
-                    
-                  
+            HStack {
+                // MARK: STYLES AVAILABLE
+                Spacer()
+                if instanceSelection != nil {
+                    HStack(alignment: .top) {
                         AxisInstancePicker(axis: axis, 
                                            instanceSelection: instanceSelection!)
-                        .frame(width: 90)
-                        
                     }
-                                  
-            // MARK: ENVIRONMENT   
-            } else {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .top) {
-                        Button(action: {
-                            addInstance(to: axis)
-                        },
-                               label: {
-                            Image(systemName: "plus.square.fill.on.square.fill")
-                            //Text("Add Style to \(axis.name)")
-                        }).help("add Style Instance")
-                        
-                        TextField("",
-                                  value: position, 
-                                  format: .number.precision(.fractionLength(0...0))
-                        ).frame(width: 40)
+                    
+                    // MARK: ENVIRONMENT   
+                } else {
+                    VStack(alignment: .leading) {
+                        HStack(alignment: .top) {
+                            Button(action: {
+                                addInstance(to: axis)
+                            },
+                                   label: {
+                                Image(systemName: "plus.square.fill.on.square.fill")
+                                //Text("Add Style to \(axis.name)")
+                            }).help("add Style Instance")
+                        }
                     }
-//                    if openDetails {
-//                        
-//                    }
+                    
                 }
-               
-            }
-            Slider(value: position, in: axis.bounds) 
+            }.frame(width:100)
+            TextField("",
+                      value: position, 
+                      format: .number.precision(.fractionLength(0...0))
+            ).frame(width: 40)
                 .disabled(instanceSelection != nil)
+            Slider(value: position, in: axis.bounds) 
+                .disabled(instanceSelection != nil 
+                          && !(instanceSelection?.wrappedValue.linked ?? false)
+                )
         }
         .buttonStyle(.borderless)
+        
     }
 }
 

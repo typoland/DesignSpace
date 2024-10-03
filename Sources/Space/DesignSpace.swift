@@ -265,6 +265,8 @@ public extension DesignSpace {
     }
 }
 
+import Collections
+
 extension DesignSpace {
     struct AxisName: Codable {
         let shortName: String
@@ -280,7 +282,7 @@ extension DesignSpace {
         return nil
     }
     
-    var names: [String: AxisName] {
+    var names: OrderedDictionary<String, AxisName> {
         guard let dataURL = designSpaceURL(forResource: "AxisNames", withExtension: ".json")
         else {
             print ("💔 no data URL")
@@ -288,7 +290,7 @@ extension DesignSpace {
         }
         do {
             let data = try Data(contentsOf: dataURL)
-            let names = try JSONDecoder().decode([String : AxisName].self, from: data)
+            let names = try JSONDecoder().decode(OrderedDictionary<String, AxisName>.self, from: data)
             return names
         } catch {
             print ("🤍", error)
