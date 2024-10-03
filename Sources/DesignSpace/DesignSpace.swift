@@ -264,3 +264,37 @@ public extension DesignSpace {
         return axis.instances.first(where: {$0.id == id })
     }
 }
+
+extension DesignSpace {
+    struct AxisName: Codable {
+        let shortName: String
+        let instances: [String]
+    }
+    
+    var names: [String: AxisName] {
+        let currentURL = Bundle.main.bundleURL
+        print (currentURL)
+        let url = currentURL.appendingPathComponent("Resources/Abbreviations.json", conformingTo: .json) 
+//        else {
+//            return [:]
+//        }
+        do {
+            let data = try Data(contentsOf: url)
+            let names = try JSONDecoder().decode([String : AxisName].self, from: data)
+            return names
+        } catch {
+            print (error)
+        }
+        
+        return [:]
+    }
+    
+    public var defaultAxisNames: [(name:String, shortName:String)] {
+        return names.map {(name:$0.key, shortName: $0.value.shortName)}
+    }
+    
+    public func defultInstancesNamesFor(axisName: String) -> [String] {
+        return names[axisName]?.instances ?? []
+        
+    }
+}
