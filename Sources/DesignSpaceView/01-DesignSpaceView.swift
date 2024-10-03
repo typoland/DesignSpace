@@ -43,7 +43,7 @@ where Axis: StyledAxisProtocol,
             },
             set: {new in
                 spaceStyleIndex = new.id
-                designSpace.setPositions(by: currentStyle.wrappedValue)
+                designSpace.setPositions(by: self.currentStyle.wrappedValue)
             })
     }
     
@@ -80,7 +80,7 @@ where Axis: StyledAxisProtocol,
                 Spacer(minLength: 100)
                 
                 Button("Add Axis") { 
-                    let axis = designSpace.addAxis(name: "New", shortName: "nw")
+                    designSpace.addAxis(name: "New", shortName: "nw")
                 }
             }
         

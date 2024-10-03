@@ -28,10 +28,14 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "DesignSpace", 
-            dependencies: ["HyperSpace"]),
+            dependencies: ["HyperSpace"],
+            resources: [.process("AxisNames.json")]
+        ),
         .testTarget(
             name: "DesignSpaceTests",
-            dependencies: ["DesignSpace"]),
+            dependencies: ["DesignSpace"]
+            //resources: [.process("AxisNames.json")]
+        ),
         
         
     ]

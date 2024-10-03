@@ -6,7 +6,6 @@
 //
 import SwiftUI
 import HyperSpace
-import DesignSpace
 
 struct DetailsView<Axis>: View 
 where Axis: StyledAxisProtocol,

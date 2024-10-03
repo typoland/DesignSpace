@@ -142,7 +142,7 @@ where Axis: StyledAxisProtocol
     var closestStyle: Style<Axis> {
         var smallestDiff: [(diff: Double, indexes: Set<Int>)] = Array(repeating: (Double.infinity, []) , 
                                                   count: axes.count)
-        for (axisIndex, axis) in axes.enumerated() {
+        for axisIndex in 0..<axes.count {
             let axisAt = axes[axisIndex].at
             for (styleIndex, style) in styles.enumerated() {
                 let diff = abs(style.coordinates[axisIndex] - axisAt)
@@ -271,21 +271,28 @@ extension DesignSpace {
         let instances: [String]
     }
     
+    func designSpaceURL(forResource: String, withExtension: String)-> URL? {
+        if let bundleURL = Bundle.main.url(forResource: "DesignSpace_DesignSpace", withExtension: ".bundle"),
+           let designSpaceBundle = Bundle(url: bundleURL),
+           let dataURL = designSpaceBundle.url(forResource: forResource, withExtension: withExtension) {
+            return dataURL
+        }
+        return nil
+    }
+    
     var names: [String: AxisName] {
-        let currentURL = Bundle.main.bundleURL
-        print (currentURL)
-        let url = currentURL.appendingPathComponent("Resources/Abbreviations.json", conformingTo: .json) 
-//        else {
-//            return [:]
-//        }
+        guard let dataURL = designSpaceURL(forResource: "AxisNames", withExtension: ".json")
+        else {
+            print ("💔 no data URL")
+            return [:]
+        }
         do {
-            let data = try Data(contentsOf: url)
+            let data = try Data(contentsOf: dataURL)
             let names = try JSONDecoder().decode([String : AxisName].self, from: data)
             return names
         } catch {
-            print (error)
+            print ("🤍", error)
         }
-        
         return [:]
     }
     

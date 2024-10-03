@@ -6,7 +6,6 @@
 //
 import SwiftUI
 import HyperSpace
-import DesignSpace
 
 struct AxisDetailsView<Axis> : View
 where Axis: StyledAxisProtocol,
@@ -45,14 +44,22 @@ where Axis: StyledAxisProtocol,
                     }
                 }
                 if designSpace.styles.isEmpty {
-                    let coordinates =  designSpace.axes.map { axis in
-                        StyleCoordinate(axisId: axis.id, at: axis.at)
-                    }
+//                    let coordinates =  designSpace.axes.map { axis in
+//                        StyleCoordinate(axisId: axis.id, at: axis.at)
+//                    }
                     environmentStyle = Style(in: designSpace)
                 }
             }) {
                 Image(systemName: "trash.fill")
             }.help("delete Axis")
+                .onChange(of: axis.name) {
+                    if let names = designSpace.defaultAxisNames.first(where: {$0.name == axis.name}) {
+                        axis.shortName = names.shortName
+                    } else {
+                        axis.shortName = "??"
+                    }
+                    
+                }
         }
     }
 }
