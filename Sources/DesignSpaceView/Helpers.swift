@@ -17,7 +17,10 @@ final public class DemoAxis: StyledAxisProtocol,
 {
     //I checked this file
     public init(name: String, bounds: ClosedRange<Double>) {
-        fatalError("not implemented, use init(name, shortname, bounds")
+        self.name = name
+        self.lowerBound = bounds.lowerBound
+        self.upperBound = bounds.upperBound
+        self.shortName = ""
     }
     
     public static func == (lhs: DemoAxis, rhs: DemoAxis) -> Bool {
@@ -37,8 +40,8 @@ final public class DemoAxis: StyledAxisProtocol,
     public var shortName: String
     public var lowerBound: Double
     public var upperBound: Double
-    public var instances: [AxisInstance]
-    public var distribution: Double?
+    public var instances: [AxisInstance] = []
+    public var distribution: Double? = nil
     public var position: PositionOnAxis = .min
     
     public var id = UUID()

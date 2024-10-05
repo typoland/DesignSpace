@@ -15,8 +15,6 @@ where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
 {
     
-
-    
     public var axes: [Axis]
 //    private var instancesValuesChanged: Bool = true
     private var stylesCache : [Style<Axis>]? = nil
