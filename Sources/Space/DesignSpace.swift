@@ -8,8 +8,16 @@
 import Foundation
 import Observation
 import HyperSpace
+import HyperValue
+
+
+
+
 
 @Observable 
+
+
+
 public final class DesignSpace<Axis>: SpaceProtocol, Codable
 where Axis: StyledAxisProtocol,
       Axis: HasPositionProtocol
@@ -77,7 +85,11 @@ where Axis: StyledAxisProtocol
     
     public func deleteAxis(at index: Int) {
         stylesCache = nil
-        axes.deleteAxis(at: index)
+        if (0..<axes.count).contains(index) {
+            axes.deleteAxis(at: index)
+        }
+            
+       
     }
     
     public func delete(axis: Axis) {
