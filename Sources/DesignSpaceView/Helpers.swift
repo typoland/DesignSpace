@@ -10,8 +10,8 @@ import Observation
 import HyperSpace
 
 
-@Observable
-final public class DemoAxis: StyledAxisProtocol, 
+
+final class DemoAxis: StyledAxisProtocol, 
                                 HasPositionProtocol, 
                                 Codable 
 {

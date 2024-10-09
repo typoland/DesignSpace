@@ -8,6 +8,7 @@
 import SwiftUI
 import HyperSpace
 
+
 typealias Selection = [StyleCoordinate]
 
 public struct DesignSpaceView<Axis>: View 
@@ -124,7 +125,7 @@ where Axis: StyledAxisProtocol,
     
     
 }
-
+import DesignSpace
 #Preview {
     var DEMO_SPACE = makeDemoAxes() as DesignSpace<DemoAxis>
     return DesignSpaceView(designSpace: DEMO_SPACE)
